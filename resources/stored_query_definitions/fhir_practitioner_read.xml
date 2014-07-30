@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<careServicesFunction xmlns="urn:ihe:iti:csd:2013"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:csd="urn:ihe:iti:csd:2013"
+  xsi:schemaLocation="urn:ihe:iti:csd:2013 CSD.xsd" xmlns:xi="http://www.w3.org/2001/XInclude"
+  xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xforms="http://www.w3.org/2002/xforms"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:hfp="http://www.w3.org/2001/XMLSchema-hasFacetAndProperty"
+  uuid="8a9f0ca4-6787-4458-9955-14b6312dae1a" content-type="text/xml">
+  <description>
+    Provider XML representation of a provider as a FHIR practitioner resource.  
+
+    At the moment, the only search parameter is the ID.
+  </description>
+  <definition ><xi:include parse='text' href='fhir_practitioner_read.xq'/></definition>
+  <xforms:instance>
+    <careServicesRequest>
+      <id/> <!-- The logical resource id associated with the resource (must be supported by all servers) -->
+      <language/> <!-- token The language of the resource -->
+      <address/>  <!-- string An address in any kind of address/part-->
+      <family/> <!-- string A portion of the family name -->
+      <gender/> <!-- token Gender of the practitioner-->
+      <given/> <!-- string A portion of the given name -->
+      <identifier/>  <!-- tokenA practitioner's Identifier-->
+      <name/> <!-- string A portion of either family or given name -->
+      <organization/> <!-- reference The identity of the organization the practitioner represents / acts on behalf of.  Can be OID or URL -->
+      <phonetic/> <!-- string A portion of either family or given name using some kind of phonetic matching algorithm-->
+      <telecom/> <!-- string The value in any kind of contact -->x
+    </careServicesRequest>
+  </xforms:instance>
+  <xforms:bind nodeset="id" type="csd:uniqueID"/>
+  <csd:extension type='fhir' urn='urn:openhie.org:openinfoman:adapter'/>
+  <csd:extension type='Practitioner' urn='urn:openhie.org:openinfoman-fihr:read'/>
+</careServicesFunction>
