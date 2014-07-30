@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<careServicesFunction xmlns="urn:ihe:iti:csd:2013"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:csd="urn:ihe:iti:csd:2013"
+  xsi:schemaLocation="urn:ihe:iti:csd:2013 CSD.xsd" xmlns:xi="http://www.w3.org/2001/XInclude"
+  xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xforms="http://www.w3.org/2002/xforms"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:hfp="http://www.w3.org/2001/XMLSchema-hasFacetAndProperty"
+  uuid="c79cbaf3-59ef-4585-a3eb-8a42ab311860" content-type="text/xml">
+  <description>
+    Facility XML representation of a provider as a FHIR location resource.  
+
+    At the moment, the only search parameter is the ID.
+  </description>
+  <definition ><xi:include parse='text' href='fhir_location_read.xq'/></definition>
+  <xforms:instance>
+    <careServicesRequest>
+      <!-- NEED TO FILL IN-->
+    </careServicesRequest>
+  </xforms:instance>
+  <xforms:bind nodeset="id" type="csd:uniqueID"/>
+  <csd:extension type='fhir' urn='urn:openhie.org:openinfoman:adapter'/>
+  <csd:extension type='Location' urn='urn:openhie.org:openinfoman-fihr:read'/>
+</careServicesFunction>

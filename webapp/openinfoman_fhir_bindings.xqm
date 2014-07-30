@@ -77,13 +77,13 @@ declare
 
 
 declare
-  %rest:path("/CSD/adapter/fhir/{$search_name}/{$doc_name}/Practitioner") 
+  %rest:path("/CSD/adapter/fhir/{$search_name}/{$doc_name}/{$entity}") 
   %output:media-type("text/xml")
-  function page:read_practitioner($search_name,$doc_name) 
+  function page:read_entity($search_name,$doc_name,$entity) 
 {  
   let $function := csr_proc:get_function_definition($csd_webconf:db,$search_name)
   let $extensions :=   $function/csd:extension[@urn='urn:openhie.org:openinfoman:adapter' and  @type='fhir']
-  let $reads :=   $function/csd:extension[@urn='urn:openhie.org:openinfoman-fihr:read' and  @type='Practitioner']
+  let $reads :=   $function/csd:extension[@urn='urn:openhie.org:openinfoman-fihr:read' and  @type=$entity]
   return
   if (count($extensions) = 0 or count($reads) = 0) 
     (:not a read practitioner query. should 404 or whatever is required by FHIR :)
