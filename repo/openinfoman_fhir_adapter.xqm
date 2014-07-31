@@ -130,7 +130,20 @@ declare function fadpt:represent_provider_as_practitioner($doc,$provider)
   (: See http://www.hl7.org/implement/standards/fhir/practitioner.html :)
   <fhir:Practitioner >
     <fhir:identifier>{string($provider/@oid)}</fhir:identifier>
-    <fhir:name>{($provider/csd:demographic/csd:name/csd:commonName)[1]/text()}</fhir:name>
+    {
+	let $name := ($provider/csd:demographic/csd:name)[1]
+	let $cn := ($name/csd:commonName)[1]/text()
+	let $sn := ($name/csd:surname)[1]/text()
+	let $gn := ($name/csd:forename)[1]/text()
+	let $hon := ($name/csd:honorific)[1]/text()
+	return
+	  <fhir:name>
+	    <fhir:text value="{$cn}"/>
+	    <fhir:family value="{$sn}"/>
+	    <fhir:given value="{$gn}"/>
+	    <fhir:prefix value="{$hon}"/>	  
+	  </fhir:name>
+    }
     {
       (
        for $contact in  $provider/csd:demographic/csd:contactPoint/csd:codedType
