@@ -19,5 +19,5 @@
   </xforms:instance>
   <xforms:bind nodeset="id" type="csd:uniqueID"/>
   <csd:extension type='fhir' urn='urn:openhie.org:openinfoman:adapter'/>
-  <csd:extension type='Location' urn='urn:openhie.org:openinfoman-fihr:read'/>
+  <csd:extension type='Location' urn='urn:openhie.org:openinfoman:adapter:fhir:read'/>
 </careServicesFunction>

@@ -43,20 +43,24 @@ declare function fadpt:create_feed_from_entities($entities,$requestParams) {
   let $doc_name := string($requestParams/@resource)
   let $base_url := string($requestParams/@base_url)
   let $function := csr_proc:get_function_definition($csd_webconf:db,$search_name)
-  let $entity := string($function/csd:extension[ @urn='urn:openhie.org:openinfoman:adapter:fhir' and position() = 1]/@type)
+  let $entity := string(($function/csd:extension[ @urn='urn:openhie.org:openinfoman:adapter:fhir:read']/@type)[1])
   let $link := concat(fadpt:get_base_url($search_name,$base_url),'/' , $doc_name ,'/',$entity )
-  let $title := "CSD entity as FHIR {$entity} "
+  let $title := concat("CSD entity as FHIR ",$entity)
   return 
   <atom:feed>
+   {$requestParams}
     <atom:title>{$title}</atom:title>
     <atom:link href="{$link}" rel="self"/>
     <atom:updated>{current-dateTime()}</atom:updated>
-    <atom:content>
      {
        for $entity in $entities
-       return <atom:entry>{$entity}</atom:entry>
+       let $ent_link := concat($link,"/", ($entity//fhir:identifier)[1])
+       return 
+         <atom:entry>
+	   <atom:link href="{$ent_link}"/>
+	   <atom:content>{$entity}</atom:content>
+	 </atom:entry>
      }
-     </atom:content>
   </atom:feed>
 
 };

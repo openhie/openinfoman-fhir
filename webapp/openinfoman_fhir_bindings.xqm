@@ -55,7 +55,7 @@ declare
   function page:show_endpoints($search_name,$doc_name) 
 {  
   let $function := csr_proc:get_function_definition($csd_webconf:db,$search_name)
-  let $reads :=   $function/csd:extension[@urn='urn:openhie.org:openinfoman-fihr:read' ]
+  let $reads :=   $function/csd:extension[@urn='urn:openhie.org:openinfoman:adapter:fhir:read' ]
   return 
     if (not(fhir:is_fhir_function($search_name)) or count($reads) = 0 )
       (:not a read practitioner query. should 404 or whatever is required by FHIR :)
@@ -92,7 +92,7 @@ declare
   function page:read_entity_id_2($search_name,$doc_name,$entity,$id) 
 {
   let $function := csr_proc:get_function_definition($csd_webconf:db,$search_name)
-  let $reads :=   $function/csd:extension[@urn='urn:openhie.org:openinfoman-fihr:read' and  @type=$entity]
+  let $reads :=   $function/csd:extension[@urn='urn:openhie.org:openinfoman:adapter:fhir:read' ]
   return
     if (not(fhir:is_fhir_function($search_name)) or count($reads) = 0 )
     (:not a read practitioner query. should 404 or whatever is required by FHIR :)
@@ -100,19 +100,17 @@ declare
   else 
     let $doc := csd_dm:open_document($csd_webconf:db,$doc_name)
     let $careServicesRequest := 
-       if ($id) 
-	 then
-	   <csd:careServicesRequest >
-	     <csd:function uuid="{$search_name}" resource="{$doc_name}" base_url="{$csd_webconf:baseurl}">
-	       <csd:requestParams >
-		 <id>{$id}</id>
-	       </csd:requestParams>
-	     </csd:function>
-	   </csd:careServicesRequest>
-	 else
-	   <csd:careServicesRequest >
-	     <csd:function uuid="{$search_name}"/>
-	   </csd:careServicesRequest>
+      <csd:careServicesRequest >
+	<csd:function uuid="{$search_name}" resource="{$doc_name}" base_url="{$csd_webconf:baseurl}">
+	  <csd:requestParams >
+	   {
+	     if ($id) 
+	     then <id>{$id}</id>
+	     else ()
+	   }
+	  </csd:requestParams>
+	</csd:function>
+      </csd:careServicesRequest>
     let $contents := csr_proc:process_CSR_stored_results($csd_webconf:db, $doc,$careServicesRequest)
     return $contents
 };
