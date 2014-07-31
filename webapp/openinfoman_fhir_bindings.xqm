@@ -5,6 +5,8 @@ import module namespace csd_webconf =  "https://github.com/openhie/openinfoman/c
 import module namespace osf = "https://github.com/openhie/openinfoman/adapter/opensearch";
 import module namespace csr_proc = "https://github.com/openhie/openinfoman/csr_proc";
 import module namespace csd_dm = "https://github.com/openhie/openinfoman/csd_dm";
+import module namespace fhir = "https://github.com/openhie/openinfoman/adapter/fhir";
+
 declare namespace xs = "http://www.w3.org/2001/XMLSchema";
 declare namespace csd = "urn:ihe:iti:csd:2013";
 declare namespace   xforms = "http://www.w3.org/2002/xforms";
@@ -22,9 +24,9 @@ declare
   let $function := csr_proc:get_function_definition($csd_webconf:db,$search_name)
   let $extensions :=   $function/csd:extension[@urn='urn:openhie.org:openinfoman:adapter' and  @type='fhir']
   return 
-    if (count($extensions) = 0 )
-      (:not a read practitioner query. should 404 or whatever is required by FHIR :)
-    then ('Not a FHIR Compatible stored function')
+    if (not(fhir:is_fhir_function($search_name)))
+      (:not a read fhir entity query. should 404 or whatever is required by FHIR :)
+    then ('Not a FHIR Compatible stored functions' )
     else 
       let 
 	$contents :=
@@ -53,12 +55,11 @@ declare
   function page:show_endpoints($search_name,$doc_name) 
 {  
   let $function := csr_proc:get_function_definition($csd_webconf:db,$search_name)
-  let $extensions :=   $function/csd:extension[@urn='urn:openhie.org:openinfoman:adapter' and  @type='fhir']
   let $reads :=   $function/csd:extension[@urn='urn:openhie.org:openinfoman-fihr:read' ]
   return 
-    if (count($extensions) = 0 or count($reads) = 0) 
+    if (not(fhir:is_fhir_function($search_name)) or count($reads) = 0 )
       (:not a read practitioner query. should 404 or whatever is required by FHIR :)
-    then ('Not a FHIR Compatible stored function')
+    then ('Not a FHIR Compatible stored function'    )
     else 
       let $contents := 
       <div>
@@ -75,25 +76,45 @@ declare
       return $contents
 };
 
+declare
+  %rest:path("/CSD/adapter/fhir/{$search_name}/{$doc_name}/{$entity}/{$id}") 
+  %output:media-type("text/xml")
+  function page:read_entity_id_1($search_name,$doc_name,$entity,$id) 
+{
+  page:read_entity_id_2($search_name,$doc_name,$entity,$id) 
+};
+
 
 declare
   %rest:path("/CSD/adapter/fhir/{$search_name}/{$doc_name}/{$entity}") 
+  %rest:query-param("_id","{$id}")
   %output:media-type("text/xml")
-  function page:read_entity($search_name,$doc_name,$entity) 
-{  
+  function page:read_entity_id_2($search_name,$doc_name,$entity,$id) 
+{
   let $function := csr_proc:get_function_definition($csd_webconf:db,$search_name)
-  let $extensions :=   $function/csd:extension[@urn='urn:openhie.org:openinfoman:adapter' and  @type='fhir']
   let $reads :=   $function/csd:extension[@urn='urn:openhie.org:openinfoman-fihr:read' and  @type=$entity]
   return
-  if (count($extensions) = 0 or count($reads) = 0) 
+    if (not(fhir:is_fhir_function($search_name)) or count($reads) = 0 )
     (:not a read practitioner query. should 404 or whatever is required by FHIR :)
   then () 
   else 
     let $doc := csd_dm:open_document($csd_webconf:db,$doc_name)
     let $careServicesRequest := 
-    <csd:careServicesRequest >
-      <csd:function uuid="{$search_name}"/>
-    </csd:careServicesRequest>
+       if ($id) 
+	 then
+	   <csd:careServicesRequest >
+	     <csd:function uuid="{$search_name}" resource="{$doc_name}" base_url="{$csd_webconf:baseurl}">
+	       <csd:requestParams >
+		 <id>{$id}</id>
+	       </csd:requestParams>
+	     </csd:function>
+	   </csd:careServicesRequest>
+	 else
+	   <csd:careServicesRequest >
+	     <csd:function uuid="{$search_name}"/>
+	   </csd:careServicesRequest>
     let $contents := csr_proc:process_CSR_stored_results($csd_webconf:db, $doc,$careServicesRequest)
     return $contents
 };
+
+
