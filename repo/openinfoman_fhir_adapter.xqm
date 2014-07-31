@@ -48,7 +48,6 @@ declare function fadpt:create_feed_from_entities($entities,$requestParams) {
   let $title := concat("CSD entity as FHIR ",$entity)
   return 
   <atom:feed>
-   {$requestParams}
     <atom:title>{$title}</atom:title>
     <atom:link href="{$link}" rel="self"/>
     <atom:updated>{current-dateTime()}</atom:updated>
