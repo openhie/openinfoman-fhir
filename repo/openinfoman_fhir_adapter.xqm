@@ -90,12 +90,25 @@ declare function fadpt:represent_facility_as_location($doc,$facility)
           can have a practice address as well as be assocaited to multiple facilities, each with their own address:)
        let $address :=  ($facility/csd:address[@type='Practice'])[1]
        return 
-	 if (exists($address))
-	 then
+	 if (exists($address))	   
+	 then	   
 	   <fhir:address>
-	     {for $al in $address/csd:addressLine 
-	       return concat(string($al/@component) , ": ", $al/text(), "&#10;")
-	     }
+	     {(
+	       for $al in $address/csd:addressLine[@component = 'streetAddress']
+	       return <fhir:line>{$al/text()}</fhir:line>
+	       ,
+	       for $city in ($address/csd:addressLine[@component = 'city'])[1]
+	       return <fhir:city>{$city/text()}</fhir:city>
+	       ,
+	       for $state in ($address/csd:addressLine[@component = 'stateProvince'])[1]
+	       return <fhir:state>{$state/text()}</fhir:state>
+	       ,
+	       for $zip in ($address/csd:addressLine[@component = 'postalCode'])[1]
+	       return <fhir:zip>{$zip/text()}</fhir:zip>
+	       ,
+	       for $country in ($address/csd:addressLine[@component = 'country'])[1]
+	       return <fhir:country>{$country /text()}</fhir:country>
+	     )}	     
            </fhir:address>
 	 else ()
 	,
@@ -159,9 +172,22 @@ declare function fadpt:represent_provider_as_practitioner($doc,$provider)
 	 if (exists($address))
 	 then
 	   <fhir:address>
-	     {for $al in $address/csd:addressLine 
-	       return concat(string($al/@component) , ": ", $al/text(), "&#10;")
-	     }
+	     {(
+	       for $al in $address/csd:addressLine[@component = 'streetAddress']
+	       return <fhir:line>{$al/text()}</fhir:line>
+	       ,
+	       for $city in ($address/csd:addressLine[@component = 'city'])[1]
+	       return <fhir:city>{$city/text()}</fhir:city>
+	       ,
+	       for $state in ($address/csd:addressLine[@component = 'stateProvince'])[1]
+	       return <fhir:state>{$state/text()}</fhir:state>
+	       ,
+	       for $zip in ($address/csd:addressLine[@component = 'postalCode'])[1]
+	       return <fhir:zip>{$zip/text()}</fhir:zip>
+	       ,
+	       for $country in ($address/csd:addressLine[@component = 'country'])[1]
+	       return <fhir:country>{$country /text()}</fhir:country>
+	     )}
            </fhir:address>
 	 else ()
 	,
