@@ -101,7 +101,7 @@ declare
     let $doc := csd_dm:open_document($csd_webconf:db,$doc_name)
     let $careServicesRequest := 
       <csd:careServicesRequest >
-	<csd:function uuid="{$search_name}" resource="{$doc_name}" base_url="{$csd_webconf:baseurl}">
+	<csd:function urn="{$search_name}" resource="{$doc_name}" base_url="{$csd_webconf:baseurl}">
 	  <csd:requestParams >
 	   {
 	     if ($id) 

@@ -15,7 +15,7 @@ let $id := $careServicesRequest/id/text()
 let $facilities := 
   if ($id) 
     then
-      /csd:CSD/csd:facilityDirectory/csd:facility[@oid = $id]
+      /csd:CSD/csd:facilityDirectory/csd:facility[@urn = $id]
     else
       /csd:CSD/csd:facilityDirectory/csd:facility
 
