@@ -26,7 +26,7 @@ declare function fadpt:is_fhir_function($search_name) {
 
 
 declare function fadpt:has_feed($search_name,$doc_name) {
-  (fadpt:is_fhir_function($search_name) and csd_dm:is_registered($csd_webconf:db ,$doc_name))
+  (fadpt:is_fhir_function($search_name) and csd_dm:document_source_exists($csd_webconf:db ,$doc_name))
 };
 
 declare function fadpt:get_base_url($search_name) {
