@@ -18,7 +18,7 @@ declare namespace os =  "http://a9.com/-/spec/opensearch/1.1/";
 
 declare
   %rest:path("/CSD/adapter/fhir/{$search_name}")
-  %output:media-type("xhtml")
+  %output:method("xhtml")
   function page:show_endpoints($search_name) 
 {  
   let $function := csr_proc:get_function_definition($csd_webconf:db,$search_name)
@@ -42,7 +42,7 @@ declare
 	      }
 	    </ul>
 	  </div>
-       return $contents
+       return csd_webconf:wrapper($contents)
 
  
 };
@@ -51,7 +51,7 @@ declare
 
 declare
   %rest:path("/CSD/adapter/fhir/{$search_name}/{$doc_name}")
-  %output:media-type("xhtml")
+  %output:method("xhtml")
   function page:show_endpoints($search_name,$doc_name) 
 {  
   let $function := csr_proc:get_function_definition($csd_webconf:db,$search_name)
@@ -73,7 +73,7 @@ declare
 	  }
 	</ul>
       </div>
-      return $contents
+      return csd_webconf:wrapper($contents)
 };
 
 declare
