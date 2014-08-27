@@ -69,7 +69,12 @@ declare
 	    for $read in $reads
 	    let $entity := string($read/@type)
 	    let $url := concat($csd_webconf:baseurl, "CSD/adapter/fhir/",$search_name, "/", $doc_name, "/", $entity)
-	    return <li><a href="{$url}">Read {$entity}</a></li>
+	    return 
+	      <li>
+	        Read {$entity} 
+		<a href="{$url}"> XML</a> 
+		/ <a href="{$url}?_format=application/json+fhir">JSON</a>
+	      </li>
 	  }
 	</ul>
       </div>
@@ -78,18 +83,18 @@ declare
 
 declare
   %rest:path("/CSD/adapter/fhir/{$search_name}/{$doc_name}/{$entity}/{$id}") 
-  %output:media-type("text/xml")
-  function page:read_entity_id_1($search_name,$doc_name,$entity,$id) 
+  %rest:query-param("_format","{$format}","application/xml+fhir")
+  function page:read_entity_id_1($search_name,$doc_name,$entity,$format,$id) 
 {
-  page:read_entity_id_2($search_name,$doc_name,$entity,$id) 
+  page:read_entity_id_2($search_name,$doc_name,$entity,$format,$id) 
 };
 
 
 declare
   %rest:path("/CSD/adapter/fhir/{$search_name}/{$doc_name}/{$entity}") 
   %rest:query-param("_id","{$id}")
-  %output:media-type("text/xml")
-  function page:read_entity_id_2($search_name,$doc_name,$entity,$id) 
+  %rest:query-param("_format","{$format}","application/xml+fhir")
+  function page:read_entity_id_2($search_name,$doc_name,$entity,$format,$id) 
 {
   let $function := csr_proc:get_function_definition($csd_webconf:db,$search_name)
   let $reads :=   $function/csd:extension[@urn='urn:openhie.org:openinfoman:adapter:fhir:read' ]
@@ -103,11 +108,12 @@ declare
       <csd:careServicesRequest >
 	<csd:function urn="{$search_name}" resource="{$doc_name}" base_url="{$csd_webconf:baseurl}">
 	  <csd:requestParams >
-	   {
-	     if ($id) 
-	     then <id>{$id}</id>
-	     else ()
-	   }
+	    {
+	      if ($id) 
+		then <id>{$id}</id>
+	      else ()
+	    }
+	    <_format>{$format}</_format>
 	  </csd:requestParams>
 	</csd:function>
       </csd:careServicesRequest>

@@ -5,7 +5,7 @@
   xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xforms="http://www.w3.org/2002/xforms"
   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
   xmlns:hfp="http://www.w3.org/2001/XMLSchema-hasFacetAndProperty"
-  urn="urn:openhie.org:openinfoman-fhir:fhir_practitionern_read" content-type="text/xml">
+  urn="urn:openhie.org:openinfoman-fhir:fhir_practitioner_read" content-type="text/xml">
   <description>
     Provider XML representation of a provider as a FHIR practitioner resource.  
 
