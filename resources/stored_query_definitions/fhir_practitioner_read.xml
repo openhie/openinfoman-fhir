@@ -5,6 +5,7 @@
   xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xforms="http://www.w3.org/2002/xforms"
   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
   xmlns:hfp="http://www.w3.org/2001/XMLSchema-hasFacetAndProperty"
+  xmlns:fhir="http://hl7.org/fhir"
   urn="urn:openhie.org:openinfoman-fhir:fhir_practitioner_read" content-type="text/xml">
   <description>
     Provider XML representation of a provider as a FHIR practitioner resource.  
@@ -14,17 +15,21 @@
   <definition ><xi:include parse='text' href='fhir_practitioner_read.xq'/></definition>
   <xforms:instance>
     <careServicesRequest>
-      <id/> <!-- The logical resource id associated with the resource (must be supported by all servers) -->
-      <language/> <!-- token The language of the resource -->
-      <address/>  <!-- string An address in any kind of address/part-->
-      <family/> <!-- string A portion of the family name -->
-      <gender/> <!-- token Gender of the practitioner-->
-      <given/> <!-- string A portion of the given name -->
-      <identifier/>  <!-- tokenA practitioner's Identifier-->
-      <name/> <!-- string A portion of either family or given name -->
-      <organization/> <!-- reference The identity of the organization the practitioner represents / acts on behalf of.  Can be OID or URL -->
-      <phonetic/> <!-- string A portion of either family or given name using some kind of phonetic matching algorithm-->
-      <telecom/> <!-- string The value in any kind of contact -->x
+      <fhir:_id/> <!-- The logical resource id associated with the resource (must be supported by all servers) -->
+      <fhir:_since/>
+      <fhir:_count>50</fhir:_count>
+      <page>1</page>
+      <fhir:identifier/>  <!-- token practitioner's Identifier-->
+      <fhir:name>
+	<fhir:text/> <!-- string A portion of the  name -->
+	<fhir:family/> <!-- string A portion of the family name -->
+	<fhir:given/> <!-- string A portion of the given name -->
+      </fhir:name>
+      <fhir:telecom/>
+      <fhir:address/>  <!-- string An address in any kind of address/part-->
+      <fhir:gender/> <!-- token Gender of the practitioner-->
+      <fhir:organization/> <!-- reference The identity of the organization the practitioner represents / acts on behalf of.  Can be OID or URL -->
+
     </careServicesRequest>
   </xforms:instance>
   <xforms:bind nodeset="id" type="csd:uniqueID"/>

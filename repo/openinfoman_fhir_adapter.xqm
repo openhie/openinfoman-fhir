@@ -38,6 +38,30 @@ declare function fadpt:get_base_url($search_name,$base_url) {
 
 
 
+declare function fadpt:format_entities($doc,$entities,$entityType,$format) {
+  switch ($entityType)
+  case "Practitioner" 
+    return 
+      if ($format = ('application/json+fhir' ,  'application/json' ,'json'))
+      then for $entity in $entities return fadpt:represent_provider_as_practitioner_JSON($doc,$entity)
+      else for $entity in $entities return  fadpt:represent_provider_as_practitioner($doc,$entity)
+  case "Location"
+    return
+      if ($format = ('application/json+fhir' ,  'application/json' ,'json'))
+      then () (: for $entity in $entities return  fadpt:represent_facility_as_location_JSON($doc,$entity) :)
+      else for $entity in $entities return  fadpt:represent_facility_as_location($doc,$entity)
+  case "Organization"
+    return ()
+(:	if ($format = ('application/json+fhir' ,  'application/json' ,'json'))
+	then for $entity in $entities return  fadpt:represent_organization_JSON($doc,$entity)
+	else for $entity in $entities return  fadpt:represent_organization($doc,$entity)
+:)
+  default return ()
+};
+
+
+
+
 declare function fadpt:create_feed_from_entities($entities,$requestParams) {
   let $search_name := string($requestParams/@function)
   let $doc_name := string($requestParams/@resource)
