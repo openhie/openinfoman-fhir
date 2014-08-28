@@ -18,48 +18,16 @@ declare namespace fhir = "http://hl7.org/fhir";
 
 
 
-declare
-  %rest:path("/CSD/adapter/fhir/{$search_name}")
-  %output:method("xhtml")
-  function page:show_endpoints($search_name) 
-{  
-  let $function := csr_proc:get_function_definition($csd_webconf:db,$search_name)
-  let $extensions :=   $function/csd:extension[@urn='urn:openhie.org:openinfoman:adapter' and  @type='fhir']
-  return 
-    if (not(fadpt:is_fhir_function($search_name)))
-      (:not a read fhir entity query. should 404 or whatever is required by FHIR :)
-    then ('Not a FHIR Compatible stored functions' )
-    else 
-      let 
-	$contents :=
-	  <div>
-	    <h2>FHIR Documents</h2>
-            <ul>
-              {
-  		for $doc_name in csd_dm:registered_documents($csd_webconf:db)      
-		return
-  		<li>
-		  <a href="{$csd_webconf:baseurl}CSD/adapter/fhir/{$search_name}/{$doc_name}">{string($doc_name)}</a>
-		</li>
-	      }
-	    </ul>
-	  </div>
-       return csd_webconf:wrapper($contents)
-
- 
-};
-
-
 
 declare
-  %rest:path("/CSD/adapter/fhir/{$search_name}/{$doc_name}")
+  %rest:path("/CSD/csr/{$doc_name}/careServicesRequest/{$search_name}/adapter/fhir")
   %output:method("xhtml")
   function page:show_endpoints($search_name,$doc_name) 
 {  
   let $function := csr_proc:get_function_definition($csd_webconf:db,$search_name)
   let $read :=  ($function/csd:extension[@urn='urn:openhie.org:openinfoman:adapter:fhir:read' ])[1]
   let $entity := string($read/@type)
-  let $base_url := concat($csd_webconf:baseurl, "CSD/adapter/fhir/",$search_name, "/", $doc_name, "/", $entity)
+  let $base_url := concat($csd_webconf:baseurl, "CSD/csr/",$doc_name ,"/careServicesRequest/",$search_name, "/adapter/fhir/", $entity)
   let $doc := csd_dm:open_document($csd_webconf:db,$doc_name)
   let $org_opts := 
     for $org in $doc/csd:CSD/csd:organizationDirectory/csd:organization
@@ -147,7 +115,7 @@ declare
 };
 
 declare
-  %rest:path("/CSD/adapter/fhir/{$search_name}/{$doc_name}/{$entityType}/{$id}") 
+  %rest:path("/CSD/csr/{$doc_name}/careServicesRequest/{$search_name}/adapter/fhir/{$entityType}/{$id}")
   %rest:query-param("_format","{$format}","application/xml+fhir")
   function page:read_entity($search_name,$doc_name,$entityType,$format,$id) 
 {
@@ -188,7 +156,7 @@ declare
 
 
 declare
-  %rest:path("/CSD/adapter/fhir/{$search_name}/{$doc_name}/{$entityType}/_search") 
+  %rest:path("/CSD/csr/{$doc_name}/careServicesRequest/{$search_name}/adapter/fhir/{$entityType}/_search")
   %rest:query-param("_format","{$format}","application/xml+fhir")
   function page:search_entity2($search_name,$doc_name,$entityType,$format)
 {
@@ -196,7 +164,7 @@ declare
 };
 
 declare
-  %rest:path("/CSD/adapter/fhir/{$search_name}/{$doc_name}/{$entityType}") 
+  %rest:path("/CSD/csr/{$doc_name}/careServicesRequest/{$search_name}/adapter/fhir/{$entityType}")
   %rest:query-param("_format","{$format}","application/xml+fhir")
   function page:search_entity($search_name,$doc_name,$entityType,$format)
 {
@@ -234,7 +202,7 @@ declare
 
 
 declare
-  %rest:path("/CSD/adapter/fhir/{$search_name}/{$doc_name}/{$entityType}/_history") 
+  %rest:path("/CSD/csr/{$doc_name}/careServicesRequest/{$search_name}/adapter/fhir/{$entityType}/_history")
   %rest:query-param("_format","{$format}","application/xml+fhir")
   function page:history_entity($search_name,$doc_name,$entityType,$format)
 {
