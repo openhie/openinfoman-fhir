@@ -105,13 +105,12 @@ declare
 		{$org_opts}
 	      </select> 
 	      <br/>
-	      <label for="facility.reference">Facility</label>
+	      <label for="location.reference">Facility</label>
 	      <select name="location.reference">
 	        <option value="">Select A Value</option>
 		{$fac_opts}
 	      </select>
 	      <br/>
-	      <input type='hidden' name='_format' value='json'/>
 	      <input type='submit' />
 	    </form> 
 	    <br/>
@@ -125,7 +124,7 @@ declare
 		{$org_opts}
 	      </select>
 	      <br/>
-	      <label for="facility.reference">Facility</label>
+	      <label for="location.reference">Facility</label>
 	      <select name="location.reference">
 	        <option value="">Select A Value</option>
 		{$fac_opts}
