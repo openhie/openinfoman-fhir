@@ -44,7 +44,7 @@ declare function fadpt:format_entities($doc,$entities,$entityType,$format) {
     return 
       if ($format = ('application/json+fhir' ,  'application/json' ,'json'))
       then for $entity in $entities return fadpt:represent_provider_as_practitioner_JSON($doc,$entity)
-      else for $entity in $entities return  fadpt:represent_provider_as_practitioner($doc,$entity)
+      else for $entity in $entities return fadpt:represent_provider_as_practitioner($doc,$entity)
   case "Location"
     return
       if ($format = ('application/json+fhir' ,  'application/json' ,'json'))

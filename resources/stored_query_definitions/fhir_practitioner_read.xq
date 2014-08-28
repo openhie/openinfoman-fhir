@@ -42,7 +42,7 @@ let $careServicesSubRequest :=
 	 }
 	 {
 	  let $since := $careServicesRequest/fhir:_since/text()
-	  return if ($since) then <csd:record updated="{$since}"/> else () 
+	  return if ($since) then <csd:record updated="{$since}"/> else (<ns/>) 
 	 }
       </csd:requestParams>
     </csd:function>
@@ -53,6 +53,7 @@ let $contents := csr_proc:process_CSR_stored_results($csd_webconf:db, /. , $care
 
    (:note this is a CSD:csd element, not a document :)
 return $contents/csd:providerDirectory/csd:provider
+
 
 
 

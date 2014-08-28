@@ -4,13 +4,14 @@ module namespace page = 'http://basex.org/modules/web-page';
 import module namespace csd_webconf =  "https://github.com/openhie/openinfoman/csd_webconf";
 import module namespace csr_proc = "https://github.com/openhie/openinfoman/csr_proc";
 import module namespace csd_dm = "https://github.com/openhie/openinfoman/csd_dm";
-import module namespace fhir = "https://github.com/openhie/openinfoman/adapter/fhir";
+import module namespace fadpt = "https://github.com/openhie/openinfoman/adapter/fhir";
 import module namespace request = "http://exquery.org/ns/request";
 
 
 declare namespace xs = "http://www.w3.org/2001/XMLSchema";
 declare namespace csd = "urn:ihe:iti:csd:2013";
 declare namespace   xforms = "http://www.w3.org/2002/xforms";
+declare namespace fhir = "http://hl7.org/fhir";
 
 
 
@@ -25,7 +26,7 @@ declare
   let $function := csr_proc:get_function_definition($csd_webconf:db,$search_name)
   let $extensions :=   $function/csd:extension[@urn='urn:openhie.org:openinfoman:adapter' and  @type='fhir']
   return 
-    if (not(fhir:is_fhir_function($search_name)))
+    if (not(fadpt:is_fhir_function($search_name)))
       (:not a read fhir entity query. should 404 or whatever is required by FHIR :)
     then ('Not a FHIR Compatible stored functions' )
     else 
@@ -60,7 +61,7 @@ declare
   let $entity := string($read/@type)
   let $base_url := concat($csd_webconf:baseurl, "CSD/adapter/fhir/",$search_name, "/", $doc_name, "/", $entity)
   return 
-    if (not(fhir:is_fhir_function($search_name)) or not($read)  )
+    if (not(fadpt:is_fhir_function($search_name)) or not($read)  )
       (:not a read practitioner query. should 404 or whatever is required by FHIR :)
     then ('Not a FHIR Compatible stored function'    )
     else 
@@ -119,7 +120,7 @@ declare
   let $function := csr_proc:get_function_definition($csd_webconf:db,$search_name)
   let $fEntityType :=   string(($function/csd:extension[@urn='urn:openhie.org:openinfoman:adapter:fhir:read' ])[1]/@type)
   return
-    if (not(fhir:is_fhir_function($search_name)) or not($fEntityType = $entityType))
+    if (not(fadpt:is_fhir_function($search_name)) or not($fEntityType = $entityType))
     (:not a valid read query. should 404 or whatever is required by FHIR :)
   then ()
   else 
@@ -133,7 +134,7 @@ declare
 	</csd:function>
       </csd:careServicesRequest>
     let $entities := (csr_proc:process_CSR_stored_results($csd_webconf:db, $doc,$careServicesRequest))[1] (:make sure there is only one:)
-    let $resource := fhir:format_entities($doc,$entities,$entityType,$format)
+    let $resource := fadpt:format_entities($doc,$entities,$entityType,$format)
     return
       if ($format = ('application/json+fhir' ,  'application/json' ,'json'))
       then
@@ -167,7 +168,7 @@ declare
   let $function := csr_proc:get_function_definition($csd_webconf:db,$search_name)
   let $fEntityType :=   string(($function/csd:extension[@urn='urn:openhie.org:openinfoman:adapter:fhir:read' ])[1]/@type)
   return
-    if (not(fhir:is_fhir_function($search_name)) or not($fEntityType = $entityType))
+    if (not(fadpt:is_fhir_function($search_name)) or not($fEntityType = $entityType))
     (:not a valid read query. should 404 or whatever is required by FHIR :)
   then ()
   else 
@@ -188,11 +189,11 @@ declare
 
     let $careServicesRequest :=   <csd:careServicesRequest >{$requestParams}</csd:careServicesRequest>
     let $entities := (csr_proc:process_CSR_stored_results($csd_webconf:db, $doc,$careServicesRequest))
-    let $resources := fhir:format_entities($doc,$entities,$entityType,$format)
+    let $resources := fadpt:format_entities($doc,$entities,$entityType,$format)
     return
       if ($format = ('application/json+fhir' ,  'application/json' ,'json'))
-      then fhir:create_feed_from_entities_JSON($resources,$requestParams) 
-      else fhir:create_feed_from_entities($resources,$requestParams) 
+      then fadpt:create_feed_from_entities_JSON($resources,$requestParams) 
+      else fadpt:create_feed_from_entities($resources,$requestParams) 
 };
 
 
@@ -205,7 +206,7 @@ declare
   let $function := csr_proc:get_function_definition($csd_webconf:db,$search_name)
   let $fEntityType :=   string(($function/csd:extension[@urn='urn:openhie.org:openinfoman:adapter:fhir:read' ])[1]/@type)
   return
-    if (not(fhir:is_fhir_function($search_name)) or not($fEntityType = $entityType))
+    if (not(fadpt:is_fhir_function($search_name)) or not($fEntityType = $entityType))
     (:not a valid read query. should 404 or whatever is required by FHIR :)
   then ()
   else 
@@ -219,11 +220,13 @@ declare
 
     let $careServicesRequest :=   <csd:careServicesRequest >{$requestParams}</csd:careServicesRequest>
     let $entities := (csr_proc:process_CSR_stored_results($csd_webconf:db, $doc,$careServicesRequest))
-    let $resources := fhir:format_entities($doc,$entities,$entityType,$format)
+    let $resources := fadpt:format_entities($doc,$entities,$entityType,$format)
     return
       if ($format = ('application/json+fhir' ,  'application/json' ,'json'))
-      then fhir:create_feed_from_entities_JSON($resources,$requestParams) 
-      else fhir:create_feed_from_entities($resources,$requestParams) 
+      then fadpt:create_feed_from_entities_JSON($resources,$requestParams) 
+      else fadpt:create_feed_from_entities($resources,$requestParams) 
+
+(:return <w>{$resources}{fadpt:create_feed_from_entities_JSON($resources,$requestParams) }{request:parameter-names()}={request:parameter("_since")}{$entities}</w>:)
 };
 
 
