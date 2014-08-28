@@ -28,6 +28,15 @@ let $careServicesSubRequest :=
 	  let $cn := $careServicesRequest/fhir:name/fhir:text/text()
 	  return if ($cn) then <csd:commonName>{$cn}</csd:commonName> else () 
 	 }
+	 {
+	  let $org := string($careServicesRequest/fhir:organization/@value)
+	  return if ($org) then <csd:organizations><csd:organization>{$org}</csd:organization></csd:organizations> else () 
+	 }
+
+	 {
+	  let $loc := string($careServicesRequest/fhir:location/@value)
+	  return if ($loc) then <csd:facilities><csd:facility>{$loc}</csd:facility></csd:facilities> else () 
+	 }
 
          {
 	  let $t_start := $careServicesRequest/page/text()

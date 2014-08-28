@@ -176,7 +176,7 @@ declare function fadpt:represent_facility_as_location($doc,$facility)
 	(:  Note: FHIR only permits one managinh organization but CSD has many :)
 	for $org in ($facility/csd:organizations/csd:organization)[1]
 	   (: Note: base for URL for reference should maybe be handled by stored function extension metadata   :)
-	   return <fhir:managingOrganization><fhir:reference>Organization/{string($org/@urn)}</fhir:reference></fhir:managingOrganization>
+	   return <fhir:managingOrganization><fhir:reference>{string($org/@urn)}</fhir:reference></fhir:managingOrganization>
 	,
 	(:May need to map codes :)
         <fhir:status>{string($facility/csd:record/@status)}</fhir:status>
@@ -274,7 +274,7 @@ declare function fadpt:represent_provider_as_practitioner($doc,$provider)
 	for $org in ($provider/csd:organizations/csd:organization)
 	  (: Note: base for URL for reference should maybe be handled by stored function extension metadata   :)
 	  (:              see http://www.hl7.org/implement/standards/fhir/base-definitions.html#ResourceReference.reference :)
-	return <fhir:organization><fhir:reference>Organization/{string($org/@urn)}</fhir:reference></fhir:organization>
+	return <fhir:organization><fhir:reference>{string($org/@urn)}</fhir:reference></fhir:organization>
 	,
 	(: Note: perhaps this should be for services -- see remark below on <fhir:period/> :)
 	for $role in ($provider/csd:codedType)
@@ -289,7 +289,7 @@ declare function fadpt:represent_provider_as_practitioner($doc,$provider)
 	for $fac in ($provider/csd:facilities/csd:facility)
 	   (: Note: base for URL for reference should maybe be handled by stored function extension metadata   :)
 	  (:              see http://www.hl7.org/implement/standards/fhir/base-definitions.html#ResourceReference.reference :)
-	return <fhir:location><fhir:reference>Location/{string($fac/@urn)}</fhir:reference></fhir:location>
+	return <fhir:location><fhir:reference>{string($fac/@urn)}</fhir:reference></fhir:location>
 	,  
 	for $qual in ($provider/csd:credential)
 	return 
@@ -429,7 +429,7 @@ declare function fadpt:represent_provider_as_practitioner_JSON($doc,$provider,$a
 	for $org in ($provider/csd:organizations/csd:organization)[1]
 	return 
 	  <organization type="object">
-	    <reference>Organization/{string($org/@urn)}</reference>
+	    <reference>{string($org/@urn)}</reference>
 	  </organization>
 
       }
@@ -469,7 +469,7 @@ declare function fadpt:represent_provider_as_practitioner_JSON($doc,$provider,$a
 	  for $fac in ($provider/csd:facilities/csd:facility)
 	  return 
 	    <_ type="object">
-	      <reference>Location/{string($fac/@urn)}</reference>
+	      <reference>{string($fac/@urn)}</reference>
 	    </_>
 	}
       </location>

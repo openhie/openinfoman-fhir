@@ -60,6 +60,14 @@ declare
   let $read :=  ($function/csd:extension[@urn='urn:openhie.org:openinfoman:adapter:fhir:read' ])[1]
   let $entity := string($read/@type)
   let $base_url := concat($csd_webconf:baseurl, "CSD/adapter/fhir/",$search_name, "/", $doc_name, "/", $entity)
+  let $doc := csd_dm:open_document($csd_webconf:db,$doc_name)
+  let $org_opts := 
+    for $org in $doc/csd:CSD/csd:organizationDirectory/csd:organization
+    return <option value="{$org/@urn}">{($org/csd:primaryName[1])/text()}</option>
+  let $fac_opts := 
+    for $fac in $doc/csd:CSD/csd:facilityDirectory/csd:facility
+    return <option value="{$fac/@urn}">{($fac/csd:primaryName[1])/text()}</option>
+
   return 
     if (not(fadpt:is_fhir_function($search_name)) or not($read)  )
       (:not a read practitioner query. should 404 or whatever is required by FHIR :)
@@ -87,15 +95,42 @@ declare
 	    <a href="{$base_url}/_search"> XML</a> 
 	    / <a href="{$base_url}/_search?_format=json">JSON</a>
 	    <br/>
-	    Query by last modified time (XML)
+	    <h4>Query by last modified time (XML)</h4>
 	    <form method='get' action="{$base_url}/_search">
-	      <input  size="35"    name='name.text' type="text" value=""/>   
+	      <label for="name.text">Common Name</label>
+	      <input  size="35"    name='name.text' type="text" value=""/>   <br/>
+	      <label for="organization.reference">Organization</label>
+	      <select name="organization.reference">
+	        <option value="">Select A Value</option>
+		{$org_opts}
+	      </select> 
+	      <br/>
+	      <label for="facility.reference">Facility</label>
+	      <select name="location.reference">
+	        <option value="">Select A Value</option>
+		{$fac_opts}
+	      </select>
+	      <br/>
+	      <input type='hidden' name='_format' value='json'/>
 	      <input type='submit' />
 	    </form> 
 	    <br/>
-	    Query by last modified time (JSON)
+	    <h4>Query by last modified time (JSON)</h4>
 	    <form method='get' action="{$base_url}/_search">
-	      <input  size="35"    name='name.text' type="text" value=""/>   
+	      <label for="name.text">Common Name</label>
+	      <input  size="35"    name='name.text' type="text" value=""/>   <br/>
+	      <label for="organization.reference">Organization</label>
+	      <select name="organization.reference">
+	        <option value="">Select A Value</option>
+		{$org_opts}
+	      </select>
+	      <br/>
+	      <label for="facility.reference">Facility</label>
+	      <select name="location.reference">
+	        <option value="">Select A Value</option>
+		{$fac_opts}
+	      </select>
+	      <br/>
 	      <input type='hidden' name='_format' value='json'/>
 	      <input type='submit' />
 	    </form> 
@@ -106,15 +141,17 @@ declare
 	    <a href="{$base_url}/_history"> XML</a> 
 	    / <a href="{$base_url}/_history?_format=json">JSON</a>
 	    <br/>
-	    Query by last modified time (XML)
+	    <h4>Query by last modified time (XML)</h4>
 	    <form method='get' action="{$base_url}/_history">
-	      <input  size="35" id="datetimepicker_xml"    name='_since' type="text" value=""/>   
+	      <label for="_since">Updated</label>
+	      <input  size="35" id="datetimepicker_xml"    name='_since' type="text" value=""/>    <br/>
 	      <input type='submit' />
 	    </form> 
 	    <br/>
-	    Query by last modified time (JSON)
+	    <h4>Query by last modified time (JSON)</h4>
 	    <form method='get' action="{$base_url}/_history">
-	      <input  size="35" id="datetimepicker_json"    name='_since' type="text" value=""/>   
+	      <label for="_since">Updated</label>
+	      <input  size="35" id="datetimepicker_json"    name='_since' type="text" value=""/>   <br/>
 	      <input type='hidden' name='_format' value='json'/>
 	      <input type='submit' />
 	    </form> 
@@ -272,7 +309,14 @@ declare function page:search_practitioner_parameters(){
     (
       if ("name.text" = $params)
       then <fhir:name><fhir:text>{request:parameter("name.text")}</fhir:text></fhir:name>
+      else (),
+      if ("organization.reference" = $params)
+      then <fhir:organization value="{request:parameter('organization.reference')}"/>
+      else (),
+      if ("location.reference" = $params)
+      then <fhir:location value="{request:parameter('location.reference')}"/>
       else ()
+
   )
   
 };
