@@ -95,10 +95,16 @@ declare
 	    <a href="{$base_url}/_search"> XML</a> 
 	    / <a href="{$base_url}/_search?_format=json">JSON</a>
 	    <br/>
-	    <h4>Query by last modified time (XML)</h4>
+	    <h4>Query by entity details</h4>
 	    <form method='get' action="{$base_url}/_search">
 	      <label for="name.text">Common Name</label>
 	      <input  size="35"    name='name.text' type="text" value=""/>   <br/>
+	      <label for="_format">Format</label>
+	      <select name="_format">
+	        <option value="xml">XML</option>
+	        <option value="json">JSON</option>
+	      </select>
+	      <br/>
 	      <label for="organization.reference">Organization</label>
 	      <select name="organization.reference">
 	        <option value="">Select A Value</option>
@@ -113,26 +119,6 @@ declare
 	      <br/>
 	      <input type='submit' />
 	    </form> 
-	    <br/>
-	    <h4>Query by last modified time (JSON)</h4>
-	    <form method='get' action="{$base_url}/_search">
-	      <label for="name.text">Common Name</label>
-	      <input  size="35"    name='name.text' type="text" value=""/>   <br/>
-	      <label for="organization.reference">Organization</label>
-	      <select name="organization.reference">
-	        <option value="">Select A Value</option>
-		{$org_opts}
-	      </select>
-	      <br/>
-	      <label for="location.reference">Facility</label>
-	      <select name="location.reference">
-	        <option value="">Select A Value</option>
-		{$fac_opts}
-	      </select>
-	      <br/>
-	      <input type='hidden' name='_format' value='json'/>
-	      <input type='submit' />
-	    </form> 
 
 	  </li>
 	  <li> 
@@ -140,20 +126,19 @@ declare
 	    <a href="{$base_url}/_history"> XML</a> 
 	    / <a href="{$base_url}/_history?_format=json">JSON</a>
 	    <br/>
-	    <h4>Query by last modified time (XML)</h4>
+	    <h4>Query by last modified time </h4>
 	    <form method='get' action="{$base_url}/_history">
+	      <label for="_format">Format</label>
+	      <select name="_format">
+	        <option value="xml">XML</option>
+	        <option value="json">JSON</option>
+	      </select>
+	      <br/>
 	      <label for="_since">Updated</label>
 	      <input  size="35" id="datetimepicker_xml"    name='_since' type="text" value=""/>    <br/>
 	      <input type='submit' />
 	    </form> 
 	    <br/>
-	    <h4>Query by last modified time (JSON)</h4>
-	    <form method='get' action="{$base_url}/_history">
-	      <label for="_since">Updated</label>
-	      <input  size="35" id="datetimepicker_json"    name='_since' type="text" value=""/>   <br/>
-	      <input type='hidden' name='_format' value='json'/>
-	      <input type='submit' />
-	    </form> 
 
 	  </li>
 	</ul>
