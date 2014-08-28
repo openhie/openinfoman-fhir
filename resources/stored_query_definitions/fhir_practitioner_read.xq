@@ -25,6 +25,11 @@ let $careServicesSubRequest :=
 	  return if ($id) then <csd:id>{$id}</csd:id> else () 
 	 }
          {
+	  let $cn := $careServicesRequest/fhir:name/fhir:text/text()
+	  return if ($cn) then <csd:commonName>{$cn}</csd:commonName> else () 
+	 }
+
+         {
 	  let $t_start := $careServicesRequest/page/text()
 	  return if (functx:is-a-number($t_start))
 	    then
@@ -42,7 +47,7 @@ let $careServicesSubRequest :=
 	 }
 	 {
 	  let $since := $careServicesRequest/fhir:_since/text()
-	  return if ($since) then <csd:record updated="{$since}"/> else (<ns/>) 
+	  return if ($since) then <csd:record updated="{$since}"/> else () 
 	 }
       </csd:requestParams>
     </csd:function>

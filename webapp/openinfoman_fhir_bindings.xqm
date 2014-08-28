@@ -86,6 +86,20 @@ declare
 	    Search
 	    <a href="{$base_url}/_search"> XML</a> 
 	    / <a href="{$base_url}/_search?_format=json">JSON</a>
+	    <br/>
+	    Query by last modified time (XML)
+	    <form method='get' action="{$base_url}/_search">
+	      <input  size="35"    name='name.text' type="text" value=""/>   
+	      <input type='submit' />
+	    </form> 
+	    <br/>
+	    Query by last modified time (JSON)
+	    <form method='get' action="{$base_url}/_search">
+	      <input  size="35"    name='name.text' type="text" value=""/>   
+	      <input type='hidden' name='_format' value='json'/>
+	      <input type='submit' />
+	    </form> 
+
 	  </li>
 	  <li> 
 	    History
@@ -179,7 +193,7 @@ declare
 	  {page:search_global_parameters() }
 	  {
 	    switch ($entityType)
-	    case "Practitioner" return () (: page:search_practitioner_parameters():)
+	    case "Practitioner" return  page:search_practitioner_parameters()
 	    case "Location" return () (: page:search_location_parameters() :)
 	    case "Organization" return () (: page:search_organization_parameters() :)
 	    default return ()	  
@@ -226,8 +240,9 @@ declare
       then fadpt:create_feed_from_entities_JSON($resources,$requestParams) 
       else fadpt:create_feed_from_entities($resources,$requestParams) 
 
-(:return <w>{$resources}{fadpt:create_feed_from_entities_JSON($resources,$requestParams) }{request:parameter-names()}={request:parameter("_since")}{$entities}</w>:)
+
 };
+
 
 
 
@@ -249,6 +264,17 @@ declare function page:search_global_parameters()
       then <page>{request:parameter("_pageOffset")}</page>
       else ()
     )
+};
+
+declare function page:search_practitioner_parameters(){
+  let $params := request:parameter-names()
+  return 
+    (
+      if ("name.text" = $params)
+      then <fhir:name><fhir:text>{request:parameter("name.text")}</fhir:text></fhir:name>
+      else ()
+  )
+  
 };
 
 declare function page:history_global_parameters() 
