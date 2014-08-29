@@ -25,7 +25,7 @@ Library Module
 --------------
 Common functionality for the is packaged in an XQuery module
 <pre>
-cd ~/basex/repo
+cd ~/openinfoman-fhir/repo
 basex -Vc "REPO INSTALL openinfoman_fhir_adapter.xqm"
 </pre>
 
