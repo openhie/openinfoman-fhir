@@ -5,16 +5,22 @@
   xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xforms="http://www.w3.org/2002/xforms"
   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
   xmlns:hfp="http://www.w3.org/2001/XMLSchema-hasFacetAndProperty"
+  xmlns:fhir="http://hl7.org/fhir"
   urn="urn:openhie.org:openinfoman-fhir:fhir_location_read" content-type="text/xml">
   <description>
-    Facility XML representation of a provider as a FHIR location resource.  
+    Provider XML representation of a faciltiy as a FHIR location resource.  
 
-    At the moment, the only search parameter is the ID.
   </description>
   <definition ><xi:include parse='text' href='fhir_location_read.xq'/></definition>
   <xforms:instance>
     <careServicesRequest>
-      <!-- NEED TO FILL IN-->
+      <fhir:_id/> <!-- The logical resource id associated with the resource (must be supported by all servers) -->
+      <fhir:_since/>
+      <fhir:_count>50</fhir:_count>
+      <page>1</page>
+      <fhir:identifier/> 
+      <fhir:name/>
+      <fhir:managingOrganization/> 
     </careServicesRequest>
   </xforms:instance>
   <xforms:bind nodeset="id" type="csd:uniqueID"/>

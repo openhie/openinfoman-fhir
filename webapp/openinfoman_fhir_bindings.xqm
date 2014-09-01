@@ -65,26 +65,19 @@ declare
 	    <br/>
 	    <h4>Query by entity details</h4>
 	    <form method='get' action="{$base_url}/_search">
-	      <label for="name.text">Common Name</label>
-	      <input  size="35"    name='name.text' type="text" value=""/>   <br/>
 	      <label for="_format">Format</label>
 	      <select name="_format">
 	        <option value="xml">XML</option>
 	        <option value="json">JSON</option>
 	      </select>
 	      <br/>
-	      <label for="organization.reference">Organization</label>
-	      <select name="organization.reference">
-	        <option value="">Select A Value</option>
-		{$org_opts}
-	      </select> 
-	      <br/>
-	      <label for="location.reference">Facility</label>
-	      <select name="location.reference">
-	        <option value="">Select A Value</option>
-		{$fac_opts}
-	      </select>
-	      <br/>
+	      {
+		switch ($entity)
+		case "Practitioner" return  page:search_practitioner_parameters_html($org_opts,$fac_opts)
+		case "Location" return  page:search_location_parameters_html($org_opts) 
+		case "Organization" return  page:search_organization_parameters_html($org_opts) 
+		default return ()	  
+	      }
 	      <input type='submit' />
 	    </form> 
 
@@ -183,8 +176,8 @@ declare
 	  {
 	    switch ($entityType)
 	    case "Practitioner" return  page:search_practitioner_parameters()
-	    case "Location" return () (: page:search_location_parameters() :)
-	    case "Organization" return () (: page:search_organization_parameters() :)
+	    case "Location" return   page:search_location_parameters() 
+	    case "Organization" return   page:search_organization_parameters() 
 	    default return ()	  
 	  }
 	</csd:requestParams>
@@ -272,6 +265,86 @@ declare function page:search_practitioner_parameters(){
   )
   
 };
+
+
+declare function page:search_practitioner_parameters_html($org_opts,$fac_opts){
+  <span>
+    <label for="name.text">Common Name</label>
+    <input  size="35"    name='name.text' type="text" value=""/>   <br/>
+    <label for="organization.reference">Organization</label>
+    <select name="organization.reference">
+      <option value="">Select A Value</option>
+      {$org_opts}
+    </select> 
+    <br/>
+    <label for="location.reference">Facility</label>
+    <select name="location.reference">
+      <option value="">Select A Value</option>
+      {$fac_opts}
+    </select>
+    <br/>
+  </span>
+};
+
+
+declare function page:search_organization_parameters(){
+  let $params := request:parameter-names()
+  return 
+    (
+      if ("name" = $params)
+      then <fhir:name>{request:parameter("name")}</fhir:name>
+      else (),
+      if ("partOf.reference" = $params)
+      then <fhir:partOf value="{request:parameter('partOf.reference')}"/>
+      else ()
+
+  )  
+};
+
+declare function page:search_organization_parameters_html($org_opts){
+  <span>
+    <label for="name">Name</label>
+    <input  size="35"    name='name' type="text" value=""/>   <br/>
+    <label for="partOf.reference">Parent Organization</label>
+    <select name="partOf.reference">
+      <option value="">Select A Value</option>
+      {$org_opts}
+    </select> 
+    <br/>
+  </span>
+};
+
+
+declare function page:search_location_parameters(){
+  let $params := request:parameter-names()
+  return 
+    (
+      if ("name" = $params)
+      then <fhir:name>{request:parameter("name")}</fhir:name>
+      else (),
+      if ("managingOrganization.reference" = $params)
+      then <fhir:managingOrganization value="{request:parameter('managingOrganization.reference')}"/>
+      else ()
+  )
+  
+};
+
+
+declare function page:search_location_parameters_html($org_opts){
+  <span>
+    <label for="name">Name</label>
+    <input  size="35"    name='name' type="text" value=""/>   
+    <br/>
+    <label for="managingOrganization.reference">Managing Organization</label>
+    <select name="managingOrganization.reference">
+      <option value="">Select A Value</option>
+      {$org_opts}
+    </select> 
+    <br/>
+  </span>
+};
+
+
 
 declare function page:history_global_parameters() 
 {

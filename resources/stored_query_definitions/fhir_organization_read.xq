@@ -14,7 +14,7 @@ declare variable $careServicesRequest as item() external;
    and limit paramaters as sent by the Service Finder
 :) 
  
-let $search_name := "urn:ihe:iti:csd:2014:stored-function:facility-search"
+let $search_name := "urn:ihe:iti:csd:2014:stored-function:organization-search"
 
 let $careServicesSubRequest :=  
   <csd:careServicesRequest>
@@ -29,8 +29,8 @@ let $careServicesSubRequest :=
 	  return if ($cn) then <csd:primaryName>{$cn}</csd:primaryName> else () 
 	 }
 	 {
-	  let $org := string($careServicesRequest/fhir:manaingOrganization/@value)
-	  return if ($org) then <csd:organizations><csd:organization>{$org}</csd:organization></csd:organizations> else () 
+	  let $org := string($careServicesRequest/fhir:partOf/@value)
+	  return if ($org) then <csd:parent>{$org}</csd:parent> else () 
 	 }
 
          {
@@ -61,7 +61,7 @@ let $careServicesSubRequest :=
 let $contents := csr_proc:process_CSR_stored_results($csd_webconf:db, /. , $careServicesSubRequest)
 
    (:note this is a CSD:csd element, not a document :)
-return $contents/csd:facilityDirectory/csd:facility
+return $contents/csd:organizationDirectory/csd:organization
 
 
 

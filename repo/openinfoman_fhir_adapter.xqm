@@ -48,14 +48,13 @@ declare function fadpt:format_entities($doc,$entities,$entityType,$format) {
   case "Location"
     return
       if ($format = ('application/json+fhir' ,  'application/json' ,'json'))
-      then () (: for $entity in $entities return  fadpt:represent_facility_as_location_JSON($doc,$entity) :)
+      then for $entity in $entities return  fadpt:represent_facility_as_location_JSON($doc,$entity) 
       else for $entity in $entities return  fadpt:represent_facility_as_location($doc,$entity)
   case "Organization"
-    return ()
-(:	if ($format = ('application/json+fhir' ,  'application/json' ,'json'))
-	then for $entity in $entities return  fadpt:represent_organization_JSON($doc,$entity)
-	else for $entity in $entities return  fadpt:represent_organization($doc,$entity)
-:)
+    return
+	if ($format = ('application/json+fhir' ,  'application/json' ,'json'))
+	then for $entity in $entities return  fadpt:represent_organization_as_organization_JSON($doc,$entity)
+	else for $entity in $entities return  fadpt:represent_organization_as_organization($doc,$entity)
   default return ()
 };
 
@@ -81,7 +80,7 @@ declare function fadpt:create_feed_from_entities($entities,$requestParams) {
        return 
          <atom:entry>
 	   <atom:link href="{$ent_link}"/>
-	   <atom:content>{$entity}</atom:content>
+	   <atom:content type="text/xml">{$entity}</atom:content>
 	 </atom:entry>
      }
   </atom:feed>
@@ -105,12 +104,79 @@ declare function fadpt:create_feed_from_entities_JSON($entities,$requestParams) 
        for $entity in $entities
        return 
          <atom:entry>
-	   <atom:content>{$entity}</atom:content>
+	   <atom:content type="application/json">{$entity}</atom:content>
 	 </atom:entry>
      }
   </atom:feed>
 
 };
+
+
+
+(:
+   Function to turn a CSD Organization entity into a FHIR Organization
+:)
+
+declare function fadpt:represent_organization_as_organization($doc,$organization)
+{
+  (: See http://www.hl7.org/implement/standards/fhir/organization.html :)
+  <fhir:Organization >
+    <fhir:identifier>{string($organization/@urn)}</fhir:identifier>
+    <fhir:name>{($organization/csd:primaryName)[1]/text()}</fhir:name>    
+    {
+      (
+       (: Note: nothing readily apparent for description :)
+       (:Note:  FHIR allows only one facility type:)
+       for $type in  ($organization/csd:codedType)[1] 
+       return  <fhir:type><fhir:coding><fhir:system>urn:oid:{string($type/@codingScheme)}</fhir:system><fhir:code>{string($type/@code)}</fhir:code></fhir:coding></fhir:type>
+       ,
+       for $contact in  $organization/csd:contactPoint/csd:codedType
+       return  
+        <fhir:telecom>
+	  <fhir:system value="urn:oid:{string($contact/@code)}"/>
+	  <fhir:value value="{$contact/text()}"/>
+	</fhir:telecom>
+       ,
+       (: Note: address is a bit weird.. which address? FHIR only allows for one. In CSD a provider 
+          can have a practice address as well as be assocaited to multiple facilities, each with their own address:)
+       let $address :=  ($organization/csd:address[@type='Practice'])[1]
+       return 
+	 if (exists($address))	   
+	 then	   
+	   <fhir:address>
+	     {(
+	       for $al in $address/csd:addressLine[@component = 'streetAddress']
+	       return <fhir:line>{$al/text()}</fhir:line>
+	       ,
+	       for $city in ($address/csd:addressLine[@component = 'city'])[1]
+	       return <fhir:city>{$city/text()}</fhir:city>
+	       ,
+	       for $state in ($address/csd:addressLine[@component = 'stateProvince'])[1]
+	       return <fhir:state>{$state/text()}</fhir:state>
+	       ,
+	       for $zip in ($address/csd:addressLine[@component = 'postalCode'])[1]
+	       return <fhir:zip>{$zip/text()}</fhir:zip>
+	       ,
+	       for $country in ($address/csd:addressLine[@component = 'country'])[1]
+	       return <fhir:country>{$country /text()}</fhir:country>
+	     )}	     
+           </fhir:address>
+	 else ()
+	,
+	(:  Note: FHIR only permits one managinh organization but CSD has many :)
+	for $org in ($organization/csd:parent)[1]
+	   (: Note: base for URL for reference should maybe be handled by stored function extension metadata   :)
+	   return <fhir:partOf><fhir:reference>{string($org/@urn)}</fhir:reference></fhir:partOf>
+	,
+	(:May need to map codes :)
+        <fhir:status>{string($organization/csd:record/@status)}</fhir:status>
+	(:Note nothing immediately obvious for FHIR partOf or for FHIR mode :)
+     )
+    }
+      
+  </fhir:Organization>
+};
+
 
 
 
@@ -134,8 +200,8 @@ declare function fadpt:represent_facility_as_location($doc,$facility)
        for $contact in  $facility/csd:contactPoint/csd:codedType
        return  
         <fhir:telecom>
-	      <fhir:system>urn:oid:{string($contact/@code)}</fhir:system>
-	      <fhir:value>{$contact/text()}</fhir:value>
+	  <fhir:system value="urn:oid:{string($contact/@code)}"/>
+	  <fhir:value value="{$contact/text()}"/>
 	</fhir:telecom>
        ,
        (: Note: address is a bit weird.. which address? FHIR only allows for one. In CSD a provider 
@@ -223,8 +289,8 @@ declare function fadpt:represent_provider_as_practitioner($doc,$provider)
        for $contact in  $provider/csd:demographic/csd:contactPoint/csd:codedType
        return  
         <fhir:telecom>
-	      <fhir:system>urn:oid:{string($contact/@code)}</fhir:system>
-	      <fhir:value>{$contact/text()}</fhir:value>
+	  <fhir:system value="urn:oid:{string($contact/@code)}"/>
+	  <fhir:value value="{$contact/text()}"/>
 	</fhir:telecom>
        ,
        (: Note: address is a bit weird.. which address? FHIR only allows for one. In CSD a provider 
@@ -316,6 +382,214 @@ declare function fadpt:represent_provider_as_practitioner($doc,$provider)
 
 
 
+(:
+   Function to turn a CSD Facility  entity into a FHIR Location as JSON
+:)
+
+declare function fadpt:represent_facility_as_location_JSON($doc,$facility) {
+  fadpt:represent_facility_as_location_JSON($doc,$facility,false())
+};
+
+declare function fadpt:represent_facility_as_location_JSON($doc,$facility,$as_xml)
+{
+  let $xml:= 
+    <json  type="object">
+      <resourceType>Location</resourceType>
+      <identifier type="array">
+      <_ type="object">
+	<value>{string($facility/@urn)}</value>
+	<assigner>{string($facility/csd:record/@sourceDirectory)}</assigner>	  
+	</_>
+	{
+	  for $otherID in $facility/csd:otherID
+	  let $auth := string($otherID/@assigningAuthorityName)
+	  let $code := string($otherID/@code)
+	  return 
+	    <_ type="object">
+	      <value>{$code}</value>
+	      <assigner>{$auth}</assigner>
+	    </_>
+	}	
+      </identifier>
+      <name>{($facility/csd:primaryName)[1]/text()}</name>
+      <type type="array">
+	{
+	  for $role in ($facility/csd:codedType)
+	  return 
+	    <_ type="object">
+	      <coding type="array">
+	        <_ type="object">
+		  <system>urn:oid:{string($role/@codingScheme)}</system>
+		  <code>{string($role/@code)}</code>
+		</_>
+	      </coding>
+	    </_>
+	}
+      </type>
+      <telecom type="array">
+	{
+	  for $contact in  $facility/csd:contactPoint/csd:codedType
+	  return 
+	    <_ type="object">
+	      <system>urn:oid:{string($contact/@code)}</system>
+	      <value>{$contact/text()}</value>
+	    </_>
+	}
+      </telecom>
+      {
+	for $address in ($facility/csd:demographic/csd:address[@type='Practice'])[1]
+	return 
+	   <address type="object">
+	     <use>{string($address/@type)}</use>
+	     <line type="array">
+	       {
+		 for $al in $address/csd:addressLine[@component = 'streetAddress']
+		 return <_>{$al/text()}</_>
+	       }
+	     </line>
+	     { 
+	       for $city in ($address/csd:addressLine[@component = 'city'])[1]
+	       return <city>{$city/text()}</city>
+	     }
+	     {
+	       for $state in ($address/csd:addressLine[@component = 'stateProvince'])[1]
+	       return <state>{$state/text()}</state>
+	     }
+	     {
+	       for $zip in ($address/csd:addressLine[@component = 'postalCode'])[1]
+	       return <zip>{$zip/text()}</zip>
+	     }
+	     {
+	       for $country in ($address/csd:addressLine[@component = 'country'])[1]
+	       return <country>{$country /text()}</country>
+	     }
+           </address>
+      }
+      {
+	for $org in ($facility/csd:organizations/csd:organization)[1]
+	   (: Note: base for URL for reference should maybe be handled by stored function extension metadata   :)
+	   return <managingOrganization type="object"><reference>{string($org/@urn)}</reference></managingOrganization>
+      }
+      {
+	switch ($facility/csd:record/@status)
+	case "106-001" return <status>active</status>
+	case "106-002" return <status>Inactive</status>
+	default return ()	  
+      }
+    </json>
+    
+  return 
+    if ($as_xml) 
+    then $xml
+    else json:serialize($xml,map{"format":"direct"})  
+
+};
+
+
+(:
+   Function to turn a CSD Organization entity into a FHIR Organization as JSON
+:)
+
+declare function fadpt:represent_organization_as_organization_JSON($doc,$organization) {
+  fadpt:represent_organization_as_organization_JSON($doc,$organization,false())
+};
+
+declare function fadpt:represent_organization_as_organization_JSON($doc,$organization,$as_xml)
+{
+  let $xml:= 
+    <json  type="object">
+      <resourceType>Organization</resourceType>
+      <identifier type="array">
+      <_ type="object">
+	<value>{string($organization/@urn)}</value>
+	<assigner>{string($organization/csd:record/@sourceDirectory)}</assigner>	  
+	</_>
+	{
+	  for $otherID in $organization/csd:otherID
+	  let $auth := string($otherID/@assigningAuthorityName)
+	  let $code := string($otherID/@code)
+	  return 
+	    <_ type="object">
+	      <value>{$code}</value>
+	      <assigner>{$auth}</assigner>
+	    </_>
+	}	
+      </identifier>
+      <name>{($organization/csd:primaryName)[1]/text()}</name>
+      <type type="array">
+	{
+	  for $role in ($organization/csd:codedType)
+	  return 
+	    <_ type="object">
+	      <coding type="array">
+	        <_ type="object">
+		  <system>urn:oid:{string($role/@codingScheme)}</system>
+		  <code>{string($role/@code)}</code>
+		</_>
+	      </coding>
+	    </_>
+	}
+      </type>
+      <telecom type="array">
+	{
+	  for $contact in  $organization/csd:contactPoint/csd:codedType
+	  return 
+	    <_ type="object">
+	      <system>urn:oid:{string($contact/@code)}</system>
+	      <value>{$contact/text()}</value>
+	    </_>
+	}
+      </telecom>
+      {
+	for $address in ($organization/csd:demographic/csd:address[@type='Practice'])[1]
+	return 
+	   <address type="object">
+	     <use>{string($address/@type)}</use>
+	     <line type="array">
+	       {
+		 for $al in $address/csd:addressLine[@component = 'streetAddress']
+		 return <_>{$al/text()}</_>
+	       }
+	     </line>
+	     { 
+	       for $city in ($address/csd:addressLine[@component = 'city'])[1]
+	       return <city>{$city/text()}</city>
+	     }
+	     {
+	       for $state in ($address/csd:addressLine[@component = 'stateProvince'])[1]
+	       return <state>{$state/text()}</state>
+	     }
+	     {
+	       for $zip in ($address/csd:addressLine[@component = 'postalCode'])[1]
+	       return <zip>{$zip/text()}</zip>
+	     }
+	     {
+	       for $country in ($address/csd:addressLine[@component = 'country'])[1]
+	       return <country>{$country /text()}</country>
+	     }
+           </address>
+      }
+      {
+	for $org in ($organization/csd:parent)[1]
+	   (: Note: base for URL for reference should maybe be handled by stored function extension metadata   :)
+	   return <partOf type="object"><reference>{string($org/@urn)}</reference></partOf>
+      }
+      {
+	if ($organization/csd:record/@status = '106-001')
+        then <status>1</status>
+        else <status>0</status>
+      }
+    </json>
+    
+  return 
+    if ($as_xml) 
+    then $xml
+    else json:serialize($xml,map{"format":"direct"})  
+
+};
+
+
+
 
 (:
    Function to turn a CSD Provider entity into a FHIR Practitioner
@@ -366,7 +640,7 @@ declare function fadpt:represent_provider_as_practitioner_JSON($doc,$provider,$a
 	    </prefix>
 	  </name>
       }
-      <contact type="array">
+      <telecom type="array">
 	{
 	  for $contact in  $provider/csd:demographic/csd:contactPoint/csd:codedType
 	  return  
@@ -375,7 +649,7 @@ declare function fadpt:represent_provider_as_practitioner_JSON($doc,$provider,$a
 	      <value>{$contact/text()}</value>
 	    </_>
 	}
-      </contact>
+      </telecom>
       {
 	for $address in ($provider/csd:demographic/csd:address[@type='Practice'])[1]
 	return 
