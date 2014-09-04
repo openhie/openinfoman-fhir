@@ -628,39 +628,43 @@ declare function fadpt:represent_provider_as_practitioner_JSON($doc,$provider,$a
 	let $hon := ($name/csd:honorific)[1]/text()
 	return
 	  <name type="object">
-	    <text>{$cn}</text>
-	    <family type="array">
-	      <_>{$sn}</_>
-	    </family>
-	    <given type="array">
-	      <_>{$gn}</_>
-	    </given>
-	    <prefix type="array">
-	      <_>{$hon}</_>
-	    </prefix>
+	    {if ($cn != '') then <text>{$cn}</text> else () }
+	    {if ($sn != '') then <family type="array"><_>{$sn}</_></family> else () }
+	    { if ($gn != '') then <given type="array"><_>{$gn}</_></given> else ()}
+	    { if ($hon != '') then  <prefix type="array"><_>{$hon}</_></prefix> else ()}
 	  </name>
       }
-      <telecom type="array">
-	{
-	  for $contact in  $provider/csd:demographic/csd:contactPoint/csd:codedType
-	  return  
-	    <_ type="object">
-	      <system>{string($contact/@code)}</system>
-	      <value>{$contact/text()}</value>
-	    </_>
-	}
-      </telecom>
+      {
+	if (count($provider/csd:demographic/csd:contactPoint/csd:codedType) >0)
+	then 
+  	  <telecom type="array">
+	    {
+	      for $contact in  $provider/csd:demographic/csd:contactPoint/csd:codedType
+	      return  
+		<_ type="object">
+		  <system>{string($contact/@code)}</system>
+		  <value>{$contact/text()}</value>
+		  </_>
+	    }
+	  </telecom>
+	else ()
+      }
       {
 	for $address in ($provider/csd:demographic/csd:address[@type='Practice'])[1]
 	return 
 	   <address type="object">
 	     <use>{string($address/@type)}</use>
-	     <line type="array">
-	       {
-		 for $al in $address/csd:addressLine[@component = 'streetAddress']
-		 return <_>{$al/text()}</_>
-	       }
-	     </line>
+	     {
+	       if (count( $address/csd:addressLine[@component = 'streetAddress']) > 0) 
+	       then
+	         <line type="array">
+		   {
+		     for $al in $address/csd:addressLine[@component = 'streetAddress']
+		     return <_>{$al/text()}</_>
+		   }
+		 </line>
+	       else ()
+             }
 	     { 
 	       for $city in ($address/csd:addressLine[@component = 'city'])[1]
 	       return <city>{$city/text()}</city>
@@ -707,96 +711,117 @@ declare function fadpt:represent_provider_as_practitioner_JSON($doc,$provider,$a
 	  </organization>
 
       }
-      <role type="array">
-	{
-	  for $role in ($provider/csd:codedType)
-	  return 
-	    <_ type="object">
-	      <coding type="array">
-	        <_ type="object">
-		  <system>urn:oid:{string($role/@codingScheme)}</system>
-		  <code>{string($role/@code)}</code>
-		</_>
-	      </coding>
+      {
+	if (count($provider/csd:codedType) > 0)
+	then
+	  <role type="array">
+	    {
+	      for $role in ($provider/csd:codedType)
+	      return 
+		<_ type="object">
+		  <coding type="array">
+	          <_ type="object">
+		    <system>urn:oid:{string($role/@codingScheme)}</system>
+		    <code>{string($role/@code)}</code>
+		    </_>
+		  </coding>
 	    </_>
-	}
-      </role>
-      <specialty type="array">
-        {
-	  for $specialty in ($provider/csd:specialty)
-	  return 
-	    <_ type="object">
-	      <coding type="array">
+	    }
+	  </role>
+	else ()
+      }
+      {
+	if (count($provider/csd:specialty) > 0) 
+	then <specialty type="array">
+          {
+	    for $specialty in ($provider/csd:specialty)
+	    return 
+	      <_ type="object">
+		<coding type="array">
 	        <_ type="object">
 		  <system>urn:oid{string($specialty/@codingScheme)}</system>
 		  <code>{string($specialty/@code)}</code>
-		</_>
-	      </coding>
-	    </_>
-	}
-      </specialty>
-      <location type="array">
-	{
-	  (: Note: base for URL for reference should maybe be handled by stored function extension metadata 
-             see http://www.hl7.org/implement/standards/fhir/base-definitions.html#ResourceReference.reference
-	  :)
-	  for $fac in ($provider/csd:facilities/csd:facility)
-	  return 
-	    <_ type="object">
-	      <reference>{string($fac/@urn)}</reference>
-	    </_>
-	}
-      </location>
-      <qualification type="array">
-	{
-	  for $qual in ($provider/csd:credential)
-	  return 
-	    <_ type="object">
-	      <code type="object">
-		<coding type="array">
-	          <_ type="object">
-		    <system>urn:oid:{string($qual/@codingScheme)}</system>
-		    <code>{string($qual/@code)}</code>
 		  </_>
 		</coding>
-	      </code>
-	      <period type="object">
-		{if (exists($qual/csd:credenitalIssueDate)) then   <start>{$qual/csd:credenitalIssueDate}</start> else ()}
-		{if (exists($qual/csd:credentialRenewalDate)) then  <end>{$qual/csd:credentialRenewalDate}</end> else ()}
-	      </period>
-	      {
+		</_>
+	    }
+	  </specialty>
+	else ()
+      }
+      {
+	if (count($provider/csd:facilities/csd:facility) > 0)
+	then <location type="array">
+	  {
+	    (: Note: base for URL for reference should maybe be handled by stored function extension metadata 
+             see http://www.hl7.org/implement/standards/fhir/base-definitions.html#ResourceReference.reference
+	     :)
+	     for $fac in ($provider/csd:facilities/csd:facility)
+	     return 
+	       <_ type="object">
+		 <reference>{string($fac/@urn)}</reference>
+		 </_>
+	    }
+	    </location>
+	  else ()
+       }
+       {
+	 if (count($provider/csd:credential) > 0) 
+	 then <qualification type="array">
+	    {
+	      for $qual in ($provider/csd:credential)
+	      return 
+		<_ type="object">
+		  <code type="object">
+		    <coding type="array">
+	            <_ type="object">
+		      <system>urn:oid:{string($qual/@codingScheme)}</system>
+		      <code>{string($qual/@code)}</code>
+		      </_>
+		    </coding>
+		  </code>
+		  <period type="object">
+                    {if (exists($qual/csd:credenitalIssueDate)) then   <start>{$qual/csd:credenitalIssueDate/text()}</start> else ()}
+		    {if (exists($qual/csd:credentialRenewalDate)) then  <end>{$qual/csd:credentialRenewalDate/text()}</end> else ()}
+		  </period>
+	       {
 		(:Note: I don't think this is quite correct.  It wants it to be an organization ID :)
-		if (exists($qual/csd:issuingAuthority)) 
+		if (exists($qual/csd:issuingAuthority[1])) 
 		then 
 	          <issuer type="object">
-		    <reference>Assigning Authority/{$qual/csd:issuingAuthority/text()}</reference>
+		    <reference>Assigning Authority/{$qual/csd:issuingAuthority[1]/text()}</reference>
 		  </issuer> 
 		else () 
-	      }
-	    </_>
-	}
-      </qualification>
-      <communication type="array">
-	{
-	  for $lang in $provider/csd:language
-	  return  
-	     <_ type="object">
-	       <coding type="array">
-	         <_ type="object">
-		   <system>urn:oid:{string($lang/@codingScheme)}</system>
-		   <code>{string($lang/@code)}</code>
-		 </_>
-	       </coding>
-	     </_>
-	}
-      </communication>
+	        }
+	      </_>
+	    }
+	  </qualification>
+	else ()
+      }
+      { 
+        if (count($provider/csd:language) > 0) 
+	then <communication type="array">
+	  {
+	    for $lang in $provider/csd:language
+	    return  
+	      <_ type="object">
+		<coding type="array">
+	        <_ type="object">
+		  <system>urn:oid:{string($lang/@codingScheme)}</system>
+		  <code>{string($lang/@code)}</code>
+		  </_>
+		</coding>
+		</_>
+	    }
+  	  </communication>
+	else ()
+       }
       
     </json>
     
   return 
     if ($as_xml) 
     then $xml
-    else json:serialize($xml,map{"format":"direct"})  
+    else json:serialize($xml,map{"format":"direct"})    
 };
 
 
