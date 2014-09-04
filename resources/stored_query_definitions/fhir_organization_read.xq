@@ -45,9 +45,11 @@ let $careServicesSubRequest :=
 	    else () 
 	 }
          {
-	   let $t_count := $careServicesRequest/fhir:_count/text()
-	   let $count := if(functx:is-a-number($t_count)) then  max(xs:int($t_count),1) else 50
-	   return if ($count) then <csd:max>{$count}</csd:max> else () 
+	   let $count := $careServicesRequest/fhir:_count/text()
+	   return 
+	      if(functx:is-a-number($count)) 
+	      then  <csd:max>max(xs:int($count),1) </csd:max>
+	      else ()
 	 }
 	 {
 	  let $since := $careServicesRequest/fhir:_since/text()
