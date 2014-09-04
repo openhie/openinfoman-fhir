@@ -22,20 +22,20 @@ let $careServicesSubRequest :=
       <csd:requestParams>
          {
 	  let $id := $careServicesRequest/fhir:_id/text()
-	  return if ($id) then <csd:id>{$id}</csd:id> else () 
+	  return if (functx:all-whitespace($id)) then () else <csd:id>{$id}</csd:id> 
 	 }
          {
 	  let $cn := $careServicesRequest/fhir:name/fhir:text/text()
-	  return if ($cn) then <csd:commonName>{$cn}</csd:commonName> else () 
+	  return if (functx:all-whitespace($cn)) then () else <csd:commonName>{$cn}</csd:commonName>
 	 }
 	 {
 	  let $org := string($careServicesRequest/fhir:organization/@value)
-	  return if ($org) then <csd:organizations><csd:organization>{$org}</csd:organization></csd:organizations> else () 
+	  return if (functx:all-whitespace($org)) then () else  <csd:organizations><csd:organization>{$org}</csd:organization></csd:organizations> 
 	 }
 
 	 {
 	  let $loc := string($careServicesRequest/fhir:location/@value)
-	  return if ($loc) then <csd:facilities><csd:facility>{$loc}</csd:facility></csd:facilities> else () 
+	  return if (functx:all-whitespace($loc)) then () else <csd:facilities><csd:facility>{$loc}</csd:facility></csd:facilities> 
 	 }
 
          {
@@ -58,7 +58,7 @@ let $careServicesSubRequest :=
 	 }
 	 {
 	  let $since := $careServicesRequest/fhir:_since/text()
-	  return if ($since) then <csd:record updated="{$since}"/> else () 
+	  return if (functx:all-whitespace($since)) then () else <csd:record updated="{$since}"/> 
 	 }
       </csd:requestParams>
     </csd:function>

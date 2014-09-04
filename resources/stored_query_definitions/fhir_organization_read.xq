@@ -22,15 +22,15 @@ let $careServicesSubRequest :=
       <csd:requestParams>
          {
 	  let $id := $careServicesRequest/fhir:_id/text()
-	  return if ($id) then <csd:id>{$id}</csd:id> else () 
+	  return if (functx:all-whitespace($id)) then () else <csd:id>{$id}</csd:id> 
 	 }
          {
 	  let $cn := $careServicesRequest/fhir:name/text()
-	  return if ($cn) then <csd:primaryName>{$cn}</csd:primaryName> else () 
+	  return if (functx:all-whitespace($cn)) then () else <csd:primaryName>{$cn}</csd:primaryName> 
 	 }
 	 {
 	  let $org := string($careServicesRequest/fhir:partOf/@value)
-	  return if ($org) then <csd:parent>{$org}</csd:parent> else () 
+	  return if (functx:all-whitespace($org)) then () else  <csd:parent>{$org}</csd:parent> 
 	 }
 
          {
