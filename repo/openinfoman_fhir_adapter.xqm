@@ -94,7 +94,7 @@ declare function fadpt:create_feed_from_entities_JSON($entities,$requestParams) 
   let $function := csr_proc:get_function_definition($csd_webconf:db,$search_name)
   let $entity := string(($function/csd:extension[ @urn='urn:openhie.org:openinfoman:adapter:fhir:read']/@type)[1])
   let $link := concat(fadpt:get_base_url($search_name,$base_url),'/' , $doc_name ,'/',$entity )
-  let $title := concat("CSD entity as FHIR ",$entity)
+  let $title := concat("CSD entity as FHIR (JSON) ",$entity)
   return 
   <atom:feed>
     <atom:title>{$title}</atom:title>
