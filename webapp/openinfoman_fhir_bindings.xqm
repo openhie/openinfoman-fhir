@@ -243,7 +243,7 @@ declare function page:search_global_parameters()
       else ()
       ,
       if ("page" = $params)
-      then <page>{request:parameter("_pageOffset")}</page>
+      then <page>{request:parameter("page")}</page>
       else ()
     )
 };
@@ -360,7 +360,7 @@ declare function page:history_global_parameters()
       else ()
       ,
       if ("page" = $params)
-      then <page>{request:parameter("_pageOffset")}</page>
+      then <page>{request:parameter("page")}</page>
       else ()
     )
 };

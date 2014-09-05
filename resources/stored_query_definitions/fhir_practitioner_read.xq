@@ -42,18 +42,18 @@ let $careServicesSubRequest :=
 	  let $t_start := $careServicesRequest/page/text()
 	  return if (functx:is-a-number($t_start))
 	    then
-	      let $start := max(xs:int($t_start),1)
+	      let $start := max((xs:int($t_start),1))
 	      let $t_count := $careServicesRequest/fhir:_count/text()
-	      let $count := if(functx:is-a-number($t_count)) then  max(xs:int($t_count),1) else 50
+	      let $count := if(functx:is-a-number($t_count)) then  max((xs:int($t_count),1)) else 50
 	      let $startIndex := ($start - 1)*$count + 1
-	      return <csd:start>{$startIndex}</csd:start>
+	      return <csd:start>{xs:string($startIndex)}</csd:start>
 	    else () 
 	 }
          {
 	   let $count := $careServicesRequest/fhir:_count/text()
 	   return 
 	      if(functx:is-a-number($count)) 
-	      then  <csd:max>max(xs:int($count),1) </csd:max>
+	      then <csd:max>{max(($count,1))} </csd:max>
 	      else ()
 	 }
 	 {
