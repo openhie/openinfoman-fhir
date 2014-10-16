@@ -6,32 +6,24 @@
   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
   xmlns:hfp="http://www.w3.org/2001/XMLSchema-hasFacetAndProperty"
   xmlns:fhir="http://hl7.org/fhir"
-  urn="urn:openhie.org:openinfoman-fhir:fhir_practitioner_read" content-type="text/xml">
+  urn="urn:openhie.org:openinfoman-fhir:fhir_organization_read" content-type="text/xml">
   <description>
-    Provider XML representation of a provider as a FHIR practitioner resource.  
+    Provider XML representation of a organization as a FHIR organization resource.  
 
   </description>
-  <definition ><xi:include parse='text' href='fhir_practitioner_read.xq'/></definition>
+  <definition ><xi:include parse='text' href='fhir_organization_read.xq'/></definition>
   <xforms:instance>
     <careServicesRequest>
       <fhir:_id/> <!-- The logical resource id associated with the resource (must be supported by all servers) -->
       <fhir:_since/>
       <fhir:_count>50</fhir:_count>
       <page>1</page>
-      <fhir:identifier/>  <!-- token practitioner's Identifier-->
-      <fhir:name>
-	<fhir:text/> <!-- string A portion of the  name -->
-	<fhir:family/> <!-- string A portion of the family name -->
-	<fhir:given/> <!-- string A portion of the given name -->
-      </fhir:name>
-      <fhir:telecom/>
-      <fhir:address/>  <!-- string An address in any kind of address/part-->
-      <fhir:gender/> <!-- token Gender of the practitioner-->
-      <fhir:organization/> <!-- reference The identity of the organization the practitioner represents / acts on behalf of.  Can be OID or URL -->
-
+      <fhir:identifier/> 
+      <fhir:name/>
+      <fhir:partOf/> 
     </careServicesRequest>
   </xforms:instance>
   <xforms:bind nodeset="id" type="csd:uniqueID"/>
   <csd:extension type='fhir' urn='urn:openhie.org:openinfoman:adapter'/>
-  <csd:extension type='Practitioner' urn='urn:openhie.org:openinfoman:adapter:fhir:read'/>
+  <csd:extension type='Organization' urn='urn:openhie.org:openinfoman:adapter:fhir:read'/>
 </careServicesFunction>

@@ -14,7 +14,7 @@ declare variable $careServicesRequest as item() external;
    and limit paramaters as sent by the Service Finder
 :) 
  
-let $search_name := "urn:ihe:iti:csd:2014:stored-function:provider-search"
+let $search_name := "urn:ihe:iti:csd:2014:stored-function:organization-search"
 
 let $careServicesSubRequest :=  
   <csd:careServicesRequest>
@@ -25,17 +25,12 @@ let $careServicesSubRequest :=
 	  return if (functx:all-whitespace($id)) then () else <csd:id>{$id}</csd:id> 
 	 }
          {
-	  let $cn := $careServicesRequest/fhir:name/fhir:text/text()
-	  return if (functx:all-whitespace($cn)) then () else <csd:commonName>{$cn}</csd:commonName>
+	  let $cn := $careServicesRequest/fhir:name/text()
+	  return if (functx:all-whitespace($cn)) then () else <csd:primaryName>{$cn}</csd:primaryName> 
 	 }
 	 {
-	  let $org := string($careServicesRequest/fhir:organization/@value)
-	  return if (functx:all-whitespace($org)) then () else  <csd:organizations><csd:organization>{$org}</csd:organization></csd:organizations> 
-	 }
-
-	 {
-	  let $loc := string($careServicesRequest/fhir:location/@value)
-	  return if (functx:all-whitespace($loc)) then () else <csd:facilities><csd:facility>{$loc}</csd:facility></csd:facilities> 
+	  let $org := string($careServicesRequest/fhir:partOf/@value)
+	  return if (functx:all-whitespace($org)) then () else  <csd:parent>{$org}</csd:parent> 
 	 }
 
          {
@@ -46,7 +41,7 @@ let $careServicesSubRequest :=
 	      let $t_count := $careServicesRequest/fhir:_count/text()
 	      let $count := if(functx:is-a-number($t_count)) then  max((xs:int($t_count),1)) else 50
 	      let $startIndex := ($start - 1)*$count + 1
-	      return <csd:start>{xs:string($startIndex)}</csd:start>
+	      return <csd:start>{$startIndex}</csd:start>
 	    else () 
 	 }
          {
@@ -58,7 +53,7 @@ let $careServicesSubRequest :=
 	 }
 	 {
 	  let $since := $careServicesRequest/fhir:_since/text()
-	  return if (functx:all-whitespace($since)) then () else <csd:record updated="{$since}"/> 
+	  return if ($since) then <csd:record updated="{$since}"/> else () 
 	 }
       </csd:requestParams>
     </csd:function>
@@ -68,7 +63,7 @@ let $careServicesSubRequest :=
 let $contents := csr_proc:process_CSR_stored_results($csd_webconf:db, /. , $careServicesSubRequest)
 
    (:note this is a CSD:csd element, not a document :)
-return $contents/csd:providerDirectory/csd:provider
+return $contents/csd:organizationDirectory/csd:organization
 
 
 
