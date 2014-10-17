@@ -31,10 +31,10 @@ declare
   let $doc := csd_dm:open_document($csd_webconf:db,$doc_name)
   let $org_opts := 
     for $org in $doc/csd:CSD/csd:organizationDirectory/csd:organization
-    return <option value="{$org/@entryID}">{($org/csd:primaryName[1])/text()}</option>
+    return <option value="{$org/@entityID}">{($org/csd:primaryName[1])/text()}</option>
   let $fac_opts := 
     for $fac in $doc/csd:CSD/csd:facilityDirectory/csd:facility
-    return <option value="{$fac/@entryID}">{($fac/csd:primaryName[1])/text()}</option>
+    return <option value="{$fac/@entityID}">{($fac/csd:primaryName[1])/text()}</option>
 
   return 
     if (not(fadpt:is_fhir_function($search_name)) or not($read)  )
