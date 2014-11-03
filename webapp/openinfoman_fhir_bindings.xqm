@@ -26,8 +26,7 @@ declare
 {  
   let $function := csr_proc:get_function_definition($csd_webconf:db,$search_name)
   let $read :=  ($function/csd:extension[@urn='urn:openhie.org:openinfoman:adapter:fhir:read' ])[1]
-  let $entity := string($read/@type)
-  let $base_url := concat($csd_webconf:baseurl, "CSD/csr/",$doc_name ,"/careServicesRequest/",$search_name, "/adapter/fhir/", $entity)
+  let $valueset :=  ($function/csd:extension[@urn='urn:openhie.org:openinfoman:adapter:fhir:valueset' ])[1]
   let $doc := csd_dm:open_document($csd_webconf:db,$doc_name)
   let $org_opts := 
     for $org in $doc/csd:CSD/csd:organizationDirectory/csd:organization
@@ -37,7 +36,7 @@ declare
     return <option value="{$fac/@entityID}">{($fac/csd:primaryName[1])/text()}</option>
 
   return 
-    if (not(fadpt:is_fhir_function($search_name)) or not($read)  )
+    if (not(fadpt:is_fhir_function($search_name)))
       (:not a read practitioner query. should 404 or whatever is required by FHIR :)
     then ('Not a FHIR Compatible stored function'    )
     else 
@@ -55,53 +54,88 @@ declare
 
       let $contents := 
       <div>
-        <h2>{$entity} in {$doc_name}</h2>
-	<p>Resource Endpoint: <pre>{$base_url}</pre></p>
+        <h2>{$doc_name}</h2>
 	<ul>
-	  <li> 
-	    Search
-	    <a href="{$base_url}/_search"> XML</a> 
-	    / <a href="{$base_url}/_search?_format=json">JSON</a>
-	    <br/>
-	    <h4>Query by entity details</h4>
-	    <form method='get' action="{$base_url}/_search">
-	      <label for="_format">Format</label>
-	      <select name="_format">
-	        <option value="xml">XML</option>
-	        <option value="json">JSON</option>
-	      </select>
-	      <br/>
-	      {
-		switch ($entity)
-		case "Practitioner" return  page:search_practitioner_parameters_html($org_opts,$fac_opts)
-		case "Location" return  page:search_location_parameters_html($org_opts) 
-		case "Organization" return  page:search_organization_parameters_html($org_opts) 
-		default return ()	  
-	      }
-	      <input type='submit' />
-	    </form> 
+	  {
+	    if ($read) 
+	    then 
+	      let $entity := string($read/@type)
+	      let $base_url := concat($csd_webconf:baseurl, "CSD/csr/",$doc_name ,"/careServicesRequest/",$search_name, "/adapter/fhir/", $entity)
+              return 
+		(
+		  <li> 
+	            Search {$entity}
+		    <a href="{$base_url}/_search"> XML</a> 
+		    / <a href="{$base_url}/_search?_format=json">JSON</a>
+		    <p>Resource Endpoint: <pre>{$base_url}</pre></p>
+		    <br/>
+		    <h4>Query by entity details</h4>
+		    <form method='get' action="{$base_url}/_search">
+		      <label for="_format">Format</label>
+		      <select name="_format">
+			<option value="xml">XML</option>
+			<option value="json">JSON</option>
+		      </select>
+		      <br/>
+		      {
+			switch ($entity)
+			case "Practitioner" return  page:search_practitioner_parameters_html($org_opts,$fac_opts)
+			case "Location" return  page:search_location_parameters_html($org_opts) 
+			case "Organization" return  page:search_organization_parameters_html($org_opts) 
+			default return ()	  
+		      }
+		      <input type='submit' />
+		    </form> 
+		  </li>
+		  ,
+		  <li> 
+	            History
+		    <a href="{$base_url}/_history"> XML</a> 
+		    / <a href="{$base_url}/_history?_format=json">JSON</a>
+		    <br/>
+		    <h4>Query by last modified time </h4>
+		    <form method='get' action="{$base_url}/_history">
+		      <label for="_format">Format</label>
+		      <select name="_format">
+			<option value="xml">XML</option>
+			<option value="json">JSON</option>
+		      </select>
+		      <br/>
+		      <label for="_since">Updated</label>
+		      <input  size="35" id="datetimepicker_xml"    name='_since' type="text" value=""/>    <br/>
+		      <input type='submit' />
+		    </form> 
+		    <br/>
+		  </li>
+	        )
+            else ()
+	  }
+	  {
+	    if ($valueset)
+	    then 
+	      let $entity := string($valueset/@type)
+	      let $base_url := concat($csd_webconf:baseurl, "CSD/csr/",$doc_name ,"/careServicesRequest/",$search_name, "/adapter/fhir/", $entity , "/valueset")
+              return 
+	      <li> 
+	        Definition
+		<br/>
+		<h4>Get valueset definition</h4>
+		<form method='get' action="{$base_url}">
+		  <label for="_format">Format</label>
+		  <select name="_format">
+	            <option value="xml">XML</option>
+	            <option value="json">JSON</option>
+		  </select>
+		  <br/>
+		  {
+		     page:search_valueset_parameters_html($org_opts)
+		  }
+		  <input type='submit' />
+		</form> 
+	      </li>
+            else ()
+	  }
 
-	  </li>
-	  <li> 
-	    History
-	    <a href="{$base_url}/_history"> XML</a> 
-	    / <a href="{$base_url}/_history?_format=json">JSON</a>
-	    <br/>
-	    <h4>Query by last modified time </h4>
-	    <form method='get' action="{$base_url}/_history">
-	      <label for="_format">Format</label>
-	      <select name="_format">
-	        <option value="xml">XML</option>
-	        <option value="json">JSON</option>
-	      </select>
-	      <br/>
-	      <label for="_since">Updated</label>
-	      <input  size="35" id="datetimepicker_xml"    name='_since' type="text" value=""/>    <br/>
-	      <input type='submit' />
-	    </form> 
-	    <br/>
-
-	  </li>
 	</ul>
       </div>
       return csd_webconf:wrapper($contents,$headers)
@@ -171,13 +205,12 @@ declare
     let $doc := csd_dm:open_document($csd_webconf:db,$doc_name)
     let $requestParams := 	
       <csd:function urn="{$search_name}" resource="{$doc_name}" base_url="{$csd_webconf:baseurl}">
-	<csd:requestParams > 	  
-	  {page:search_global_parameters() }
+	<csd:requestParams > 	  	  
 	  {
 	    switch ($entityType)
 	    case "Practitioner" return  page:search_practitioner_parameters()
-	    case "Location" return   page:search_location_parameters() 
-	    case "Organization" return   page:search_organization_parameters() 
+	    case "Location" return   page:search_location_parameters()
+	    case "Organization" return 	page:search_organization_parameters()
 	    default return ()	  
 	  }
 	</csd:requestParams>
@@ -189,8 +222,38 @@ declare
     return
       if ($format = ('application/json+fhir' ,  'application/json' ,'json'))
       then fadpt:create_feed_from_entities_JSON($resources,$requestParams) 
-      else fadpt:create_feed_from_entities($resources,$requestParams) 
+      else fadpt:create_feed_from_entities($resources,$requestParams)
 };
+
+
+
+declare
+  %rest:path("/CSD/csr/{$doc_name}/careServicesRequest/{$search_name}/adapter/fhir/{$entityType}/valueset")
+  %rest:query-param("_format","{$format}","application/xml+fhir")
+  function page:valueset_entity($search_name,$doc_name,$entityType,$format)
+{
+  let $function := csr_proc:get_function_definition($csd_webconf:db,$search_name)
+  let $fEntityType :=   string(($function/csd:extension[@urn='urn:openhie.org:openinfoman:adapter:fhir:valueset' ])[1]/@type)
+  return
+    if (not(fadpt:is_fhir_function($search_name)) or not($fEntityType = $entityType))
+    (:not a valid read query. should 404 or whatever is required by FHIR :)
+  then ()
+  else 
+    let $doc := csd_dm:open_document($csd_webconf:db,$doc_name)
+    let $requestParams := 	
+      <csd:function urn="{$search_name}" resource="{$doc_name}" base_url="{$csd_webconf:baseurl}">
+	<csd:requestParams > 	  	  
+	  {
+	    page:search_valueset_parameters() 
+	  }
+	</csd:requestParams>
+      </csd:function>	  
+
+    let $careServicesRequest :=   <csd:careServicesRequest >{$requestParams}</csd:careServicesRequest>
+    let $valueset := (csr_proc:process_CSR_stored_results($csd_webconf:db, $doc,$careServicesRequest))
+    return $valueset
+};
+
 
 
 
@@ -252,6 +315,8 @@ declare function page:search_practitioner_parameters(){
   let $params := request:parameter-names()
   return 
     (
+      page:search_global_parameters() 
+      ,
       if ("name.text" = $params)
       then <fhir:name><fhir:text>{request:parameter("name.text")}</fhir:text></fhir:name>
       else (),
@@ -291,6 +356,9 @@ declare function page:search_organization_parameters(){
   let $params := request:parameter-names()
   return 
     (
+
+      page:search_global_parameters() 
+      ,
       if ("name" = $params)
       then <fhir:name>{request:parameter("name")}</fhir:name>
       else (),
@@ -300,6 +368,7 @@ declare function page:search_organization_parameters(){
 
   )  
 };
+
 
 declare function page:search_organization_parameters_html($org_opts){
   <span>
@@ -315,10 +384,46 @@ declare function page:search_organization_parameters_html($org_opts){
 };
 
 
+
+
+declare function page:search_valueset_parameters(){
+  let $params := request:parameter-names()
+  return 
+    (
+      if ("_id" = $params)
+      then <fhir:_id>{request:parameter("_id")}</fhir:_id>
+      else ()
+	,
+      if ("_query" = $params)
+      then <fhir:_query value="{request:parameter('_query')}"/>
+      else ()
+
+  )  
+};
+
+declare function page:search_valueset_parameters_html($org_opts){
+  <span>
+    <label for="_id"> Organization</label>
+    <select name="_id">
+      <option value="">Base Definition</option>
+      {$org_opts}
+    </select> 
+    <label for="_query"> Query Action</label>
+    <select name="_query">
+      <option value="">Select A Value</option>
+      <option value="expand">Value Set Expansion</option>
+    </select> 
+
+  </span>
+};
+
+
 declare function page:search_location_parameters(){
   let $params := request:parameter-names()
   return 
     (
+      page:search_global_parameters() 
+      ,
       if ("name" = $params)
       then <fhir:name>{request:parameter("name")}</fhir:name>
       else (),
