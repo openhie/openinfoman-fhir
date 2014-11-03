@@ -7,7 +7,7 @@ declare namespace fhir = "http://hl7.org/fhir";
 declare variable $careServicesRequest as item() external;
 
 let $org_id := $careServicesRequest/fhir:_id/text()
-let $search_name := string($careServicesRequest/@urn)
+let $search_name := string($careServicesRequest/@function)
 let $resource := string($careServicesRequest/@resource)
 
 let $function := csr_proc:get_function_definition($csd_webconf:db,$search_name)
@@ -39,12 +39,12 @@ let $org_name := ($org/csd:primaryName)[1]/text()
 return
   if (exists($org) ) 
   then
-    <fhir:ValueSet> 
+    <fhir:ValueSet>
       <fhir:text>
 	<fhir:status value="generated"/>
 	<div xmlns="http://www.w3.org/1999/xhtml">
 	  <h2>Value Set {$org_id}</h2>
-	  <h3>{$org/csd:primaryName/text()}</h3>
+	  <h3>Valueset {$entity}: {$org/csd:primaryName/text()}</h3>
 	  {
 	    let $parent := (/csd:CSD/csd:organizationDirectory/csd:organization[@entityID = $org/csd:parent/@entityID ])[1]
 	    return 

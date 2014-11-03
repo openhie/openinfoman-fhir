@@ -241,7 +241,7 @@ declare
   else 
     let $doc := csd_dm:open_document($csd_webconf:db,$doc_name)
     let $requestParams := 	
-      <csd:function urn="{$search_name}" resource="{$doc_name}" base_url="{$csd_webconf:baseurl}">
+      <csd:function  urn="{$search_name}" resource="{$doc_name}" base_url="{$csd_webconf:baseurl}">
 	<csd:requestParams > 	  	  
 	  {
 	    page:search_valueset_parameters() 
