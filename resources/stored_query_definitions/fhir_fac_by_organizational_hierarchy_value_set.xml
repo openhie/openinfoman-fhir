@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<careServicesFunction xmlns="urn:ihe:iti:csd:2013"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:csd="urn:ihe:iti:csd:2013"
+  xsi:schemaLocation="urn:ihe:iti:csd:2013 CSD.xsd" xmlns:xi="http://www.w3.org/2001/XInclude"
+  xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xforms="http://www.w3.org/2002/xforms"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:hfp="http://www.w3.org/2001/XMLSchema-hasFacetAndProperty"
+  xmlns:fhir="http://hl7.org/fhir"
+  urn="urn:openhie.org:openinfoman-fhir:fhir_fac_by_organizational_hierarchy_value_set" content-type="text/xml">
+  <description>
+    Provider XML representation of organizational-facility hierarchy a FHIR value set resource.  
+
+  </description>
+  <definition ><xi:include parse='text' href='fhir_fac_by_organizational_hierarchy_value_set.xq'/></definition>
+  <xforms:instance>
+    <csd:careServicesRequest>
+      <fhir:_id/> <!-- The logical resource id associated with the resource (must be supported by all servers) -->
+<!--       <fhir:_language/>  -->
+      <fhir:_query value='expand'/> 
+
+    </csd:careServicesRequest>
+  </xforms:instance>
+  <xforms:bind nodeset="csd:careServicesRequest/fhir:_id" type="csd:uniqueID"/>
+  <csd:extension type='fhir' urn='urn:openhie.org:openinfoman:adapter'/>
+  <csd:extension type='OrgFacilityValueSet' urn='urn:openhie.org:openinfoman:adapter:fhir:valueset'/>
+</careServicesFunction>
