@@ -2,10 +2,10 @@ openinfoman-fhir
 ================
 
 OpenInfoMan FHIR Adapater to represent CSD entities as FHIR resources:
-* CSD Provider as FHIR practitioner
-* CSD Faciltiy as FHIR location
-* CSD Organization as FHIR organization
-* CSD Facilities in a Organizational Hierarchy as FHIR ValueSets appropriately composed of each other 
+* CSD Provider as FHIR practitioner http://www.hl7.org/implement/standards/fhir/practitioner.html
+* CSD Faciltiy as FHIR location http://www.hl7.org/implement/standards/fhir/location.html
+* CSD Organization as FHIR organization http://www.hl7.org/implement/standards/fhir/organization.html
+* CSD Facilities in a Organizational Hierarchy as FHIR ValueSets appropriately composed of each other http://www.hl7.org/implement/standards/fhir/valueset.html 
 
 Prerequisites
 =============
