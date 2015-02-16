@@ -54,7 +54,7 @@ $LOGLINES" |  $XARGS -0 | $AWK '{printf "%-'"$WIDTH.$WIDTH"'s\n" , $0}')
     done
     cd $HOME
 
-    $GIT diff
+    $GIT  --no-pager diff
     $GIT add .
 
     echo "Incrementing version"
@@ -110,6 +110,8 @@ do
     mkdir -p $PKGDIR/var/lib
     cd $PKGDIR/var/lib && git clone https://github.com/openhie/$PKG openinfoman
     rm -fr $PKGDIR/var/lib/openinfoman/.git
+    rm -f $PKGDIR/var/lib/openinfoman/.gitignore
+    rm -fr $PKGDIR/var/lib/openinfoman/packaging
     mkdir -p $PKGDIR/var/lib/openinfoman/repo
     mv $PKGDIR/var/lib/openinfoman/repo $PKGDIR/var/lib/openinfoman/repo-src 
     cp  -R $TARGETDIR/* $PKGDIR
@@ -136,3 +138,5 @@ done
 
 cd $HOME
 
+git push
+git push --tags
