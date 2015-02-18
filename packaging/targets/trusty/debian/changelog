@@ -1,3 +1,9 @@
+openinfoman-fhir (1.0.7~trusty) trusty; urgency=medium
+
+  * Release Version 1.0.7
+
+ -- Carl Leitner <litlfred@ibiblio.org>  Wed, 18 Feb 2015 19:06:33 +0000
+
 openinfoman-fhir (1.0.6~trusty) trusty; urgency=medium
 
   * Release Version 1.0.6
