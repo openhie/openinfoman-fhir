@@ -1,3 +1,9 @@
+openinfoman-fhir (1.0.6~utopic) utopic; urgency=medium
+
+  * Release Version 1.0.6
+
+ -- Carl Leitner <litlfred@ibiblio.org>  Wed, 18 Feb 2015 19:06:18 +0000
+
 openinfoman-fhir (1.0.5~utopic) utopic; urgency=medium
 
   * Release Version 1.0.5
