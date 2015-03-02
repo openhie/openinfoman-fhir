@@ -7,15 +7,28 @@ OpenInfoMan FHIR Adapater to represent CSD entities as FHIR resources:
 * CSD Organization as FHIR organization http://www.hl7.org/implement/standards/fhir/organization.html
 * CSD Facilities in a Organizational Hierarchy as FHIR ValueSets appropriately composed of each other http://www.hl7.org/implement/standards/fhir/valueset.html 
 
-Prerequisites
-=============
+
+
+Ubuntu Installation
+===================
+You can easily install on Ubuntu 14.04 and Ubuntu 14.10 using the following commands
+<pre>
+sudo add-apt-repository ppa:openhie/release
+sudo apt-get update
+sudo apt-get install openinfoman-fhir
+</pre>
+
+
+
+Manual Installation
+===================
 
 Assumes that you have installed BaseX and OpenInfoMan according to:
 > https://github.com/openhie/openinfoman/wiki/Install-Instructions
 
 
 Directions
-==========
+----------
 To get the libarary:
 <pre>
 cd ~/
