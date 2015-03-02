@@ -1,13 +1,13 @@
 openinfoman-fhir
 ================
 
-OpenInfoMan FHIR Adapater to represent CSD entities as FHIR resources:
+The OpenInfoMan FHIR Adapater to represent CSD entities as FHIR resources:
 * CSD Provider as FHIR practitioner http://www.hl7.org/implement/standards/fhir/practitioner.html
 * CSD Faciltiy as FHIR location http://www.hl7.org/implement/standards/fhir/location.html
 * CSD Organization as FHIR organization http://www.hl7.org/implement/standards/fhir/organization.html
 * CSD Facilities in a Organizational Hierarchy as FHIR ValueSets appropriately composed of each other http://www.hl7.org/implement/standards/fhir/valueset.html 
 
-
+It makes use of the OpenInfoMan software https://github.com/openhie/openinfoman
 
 Ubuntu Installation
 ===================
