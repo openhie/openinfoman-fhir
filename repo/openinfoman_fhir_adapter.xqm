@@ -10,6 +10,7 @@ module namespace fadpt = "https://github.com/openhie/openinfoman/adapter/fhir";
 
 (:Import other namespaces.  Set default namespace  to os :)
 import module namespace csd_webconf =  "https://github.com/openhie/openinfoman/csd_webconf";
+import module namespace csd_webui =  "https://github.com/openhie/openinfoman/csd_webui";
 import module namespace csr_proc = "https://github.com/openhie/openinfoman/csr_proc";
 import module namespace csd_dm = "https://github.com/openhie/openinfoman/csd_dm";
 
@@ -30,7 +31,7 @@ declare function fadpt:has_feed($search_name,$doc_name) {
 };
 
 declare function fadpt:get_base_url($search_name) {
-  fadpt:get_base_url($search_name,$csd_webconf:baseurl)
+  fadpt:get_base_url($search_name,csd_webui:generateURL())
 };
 declare function fadpt:get_base_url($search_name,$base_url) {
   concat($base_url,'CSD/adapter/fhir/' ,$search_name)
