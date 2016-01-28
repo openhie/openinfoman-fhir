@@ -1,0 +1,22 @@
+#!/bin/bash
+set -x
+
+
+
+OI=/var/lib/openinfoman
+USERNAME=oi
+BASEX=$OI/bin/basex
+
+
+REPOS=("openinfoman_fhir_adapter.xqm")
+
+
+for REPO in ${REPOS[@]}
+do
+   INST="REPO INSTALL ${OI}/repo-src/${REPO}"
+   $BASEX -Vc "${INST}"
+done
+
+chown -R $USERNAME:$USERNAME $OI
+
+

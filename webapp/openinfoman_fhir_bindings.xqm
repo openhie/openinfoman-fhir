@@ -2,6 +2,7 @@ module namespace page = 'http://basex.org/modules/web-page';
 
 (:Import other namespaces.  :)
 import module namespace csd_webconf =  "https://github.com/openhie/openinfoman/csd_webconf";
+import module namespace csd_webui =  "https://github.com/openhie/openinfoman/csd_webui";
 import module namespace csr_proc = "https://github.com/openhie/openinfoman/csr_proc";
 import module namespace csd_dm = "https://github.com/openhie/openinfoman/csd_dm";
 import module namespace fadpt = "https://github.com/openhie/openinfoman/adapter/fhir";
@@ -42,8 +43,8 @@ declare
     else 
       let $headers :=
 	(
-	<link rel="stylesheet" type="text/css" media="screen"   href="{$csd_webconf:baseurl}static/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css"/>
-	,<script src="{$csd_webconf:baseurl}static/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"/>
+	<link rel="stylesheet" type="text/css" media="screen"   href="{csd_webui:generateURL()}static/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css"/>
+	,<script src="{csd_webui:generateURL('static/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js')}"/>
 	,<script type="text/javascript">
           $( document ).ready(function() {{ 
 	    $('#datetimepicker_xml').datetimepicker({{format: 'yyyy-mm-ddThh:ii:ss+00:00',startDate:'2013-10-01'}});
@@ -60,7 +61,7 @@ declare
 	    if ($read) 
 	    then 
 	      let $entity := string($read/@type)
-	      let $base_url := concat($csd_webconf:baseurl, "CSD/csr/",$doc_name ,"/careServicesRequest/",$search_name, "/adapter/fhir/", $entity)
+	      let $base_url := csd_webui:generateURL( "CSD/csr/",$doc_name ,"/careServicesRequest/",$search_name, "/adapter/fhir/", $entity)
               return 
 		(
 		  <li> 
@@ -114,7 +115,7 @@ declare
 	    if ($valueset)
 	    then 
 	      let $entity := string($valueset/@type)
-	      let $base_url := concat($csd_webconf:baseurl, "CSD/csr/",$doc_name ,"/careServicesRequest/",$search_name, "/adapter/fhir/", $entity , "/valueset")
+	      let $base_url := csd_webui:generateURL( "CSD/csr/",$doc_name ,"/careServicesRequest/",$search_name, "/adapter/fhir/", $entity , "/valueset")
               return 
 	      <li> 
 	        Definition
@@ -138,7 +139,7 @@ declare
 
 	</ul>
       </div>
-      return csd_webconf:wrapper($contents,$headers)
+      return csd_webui:wrapper($contents,$headers)
 };
 
 declare
@@ -201,7 +202,7 @@ declare
   else 
     let $doc := csd_dm:open_document($csd_webconf:db,$doc_name)
     let $requestParams := 	
-	<csd:requestParams function="{$search_name}" resource="{$doc_name}" base_url="{$csd_webconf:baseurl}"> > 	  	  
+	<csd:requestParams function="{$search_name}" resource="{$doc_name}" base_url="{$csd_webconf:baseurl}">  	  	  
 	  {
 	    switch ($entityType)
 	    case "Practitioner" return  page:search_practitioner_parameters()
@@ -262,7 +263,7 @@ declare
   else 
     let $doc := csd_dm:open_document($csd_webconf:db,$doc_name)
     let $requestParams := 	
-	<csd:requestParams  function="{$search_name}" resource="{$doc_name}" base_url="{$csd_webconf:baseurl}"> 	  
+      <csd:requestParams  function="{$search_name}" resource="{$doc_name}" base_url="{$csd_webconf:baseurl}"> 	  
 	  {page:history_global_parameters() }
 	</csd:requestParams>
 
