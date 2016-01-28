@@ -1,3 +1,15 @@
+openinfoman-fhir (1.0.11~trusty) trusty; urgency=medium
+
+  * Release Version 1.0.11
+    -dd3c029 updates
+    --http://github.com/openhie/openinfoman-fhir/commmit/dd3c029
+    -099c209 updated CSR call
+    --http://github.com/openhie/openinfoman-fhir/commmit/099c209
+    -2b8aa64 (partially) updated to DSTUv2
+    --http://github.com/openhie/openinfoman-fhir/commmit/2b8aa64
+
+ -- Carl Leitner <litlfred@ibiblio.org>  Wed, 27 Jan 2016 21:53:35 -0500
+
 openinfoman-fhir (1.0.10~trusty) trusty; urgency=medium
 
   * Release Version 1.0.10
