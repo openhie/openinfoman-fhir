@@ -61,7 +61,7 @@ declare
 	    if ($read) 
 	    then 
 	      let $entity := string($read/@type)
-	      let $base_url := csd_webui:generateURL( "CSD/csr/",$doc_name ,"/careServicesRequest/",$search_name, "/adapter/fhir/", $entity)
+	      let $base_url := csd_webui:generateURL( ("CSD/csr/",$doc_name ,"/careServicesRequest/",$search_name, "/adapter/fhir/", $entity))
               return 
 		(
 		  <li> 
@@ -115,7 +115,7 @@ declare
 	    if ($valueset)
 	    then 
 	      let $entity := string($valueset/@type)
-	      let $base_url := csd_webui:generateURL( "CSD/csr/",$doc_name ,"/careServicesRequest/",$search_name, "/adapter/fhir/", $entity , "/valueset")
+	      let $base_url := csd_webui:generateURL(( "CSD/csr/",$doc_name ,"/careServicesRequest/",$search_name, "/adapter/fhir/", $entity , "/valueset"))
               return 
 	      <li> 
 	        Definition

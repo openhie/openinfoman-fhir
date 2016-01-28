@@ -403,7 +403,7 @@ declare function fadpt:represent_facility_as_location_JSON($doc,$facility,$as_xm
       <id>{string($facility/@entityID)}</id>
       <identifier type="array">
       <_ type="object">
-	<id>{string($organization/@entityID)}</id>
+	<id>{string($facility/@entityID)}</id>
 	<value>{string($facility/@entityID)}</value>
 	<system>{string($facility/csd:record/@sourceDirectory)}</system>
 	</_>
@@ -523,7 +523,7 @@ declare function fadpt:represent_organization_as_organization_JSON($doc,$organiz
 	    <_ type="object">
 	      <type>{$code}</type>
 	      <value>{$val}</value>
-	      <systemr>{$auth}</system>
+	      <system>{$auth}</system>
 	    </_>
 	}	
       </identifier>
