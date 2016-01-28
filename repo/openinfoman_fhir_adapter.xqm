@@ -121,6 +121,7 @@ declare function fadpt:represent_organization_as_organization($doc,$organization
 {
   (: See http://www.hl7.org/implement/standards/fhir/organization.html :)
   <fhir:Organization >
+    <fhir:id>{string($organization/@entityID)}</fhir:id>
     <fhir:identifier>{string($organization/@entityID)}</fhir:identifier>
     <fhir:name>{($organization/csd:primaryName)[1]/text()}</fhir:name>    
     {
@@ -188,6 +189,7 @@ declare function fadpt:represent_facility_as_location($doc,$facility)
 {
   (: See http://www.hl7.org/implement/standards/fhir/location.html :)
   <fhir:Location >
+    <fhir:id>{string($facility/@entityID)}</fhir:id>
     <fhir:identifier>{string($facility/@entityID)}</fhir:identifier>
     <fhir:name>{($facility/csd:primaryName)[1]/text()}</fhir:name>    
     {
@@ -263,12 +265,14 @@ declare function fadpt:represent_provider_as_practitioner($doc,$provider)
 {
   (: See http://www.hl7.org/implement/standards/fhir/practitioner.html :)
   <fhir:Practitioner >
-    <fhir:identifier><fhir:value>{string($provider/@entityID)}</fhir:value><fhir:assigner>{string($provider/csd:record/@sourceDirectory)}</fhir:assigner></fhir:identifier> 
+    <fhir:id>{string($provider/@entityID)}</fhir:id>
+    <fhir:identifier><fhir:value>{string($provider/@entityID)}</fhir:value><fhir:system>{string($provider/csd:record/@sourceDirectory)}</fhir:system></fhir:identifier> 
     {
       for $otherID in $provider/csd:otherID
       let $auth := string($otherID/@assigningAuthorityName)
       let $code := string($otherID/@code)
-      return <fhir:identifier><fhir:value>{$code}</fhir:value><fhir:assigner>{$auth}</fhir:assigner></fhir:identifier> 
+      let $val := $otherID/text()
+      return <fhir:identifier><fhir:type>{$code}</fhir:type><fhir:value>{$val}</fhir:value><fhir:system>{$auth}</fhir:system></fhir:identifier> 
     }
     {
         for $name in ($provider/csd:demographic/csd:name)[1] (:why does FHIR only allow one fhir:text and name element :)
@@ -395,19 +399,23 @@ declare function fadpt:represent_facility_as_location_JSON($doc,$facility,$as_xm
   let $xml:= 
     <json  type="object">
       <resourceType>Location</resourceType>
+      <id>{string($facility/@entityID)}</id>
       <identifier type="array">
       <_ type="object">
+	<id>{string($organization/@entityID)}</id>
 	<value>{string($facility/@entityID)}</value>
-	<assigner>{string($facility/csd:record/@sourceDirectory)}</assigner>	  
+	<system>{string($facility/csd:record/@sourceDirectory)}</system>
 	</_>
 	{
 	  for $otherID in $facility/csd:otherID
 	  let $auth := string($otherID/@assigningAuthorityName)
 	  let $code := string($otherID/@code)
+	  let $val := $otherID/text()
 	  return 
 	    <_ type="object">
-	      <value>{$code}</value>
-	      <assigner>{$auth}</assigner>
+	      <type>{$code}</type>
+	      <value>{$val}</value>
+	      <system>{$auth}</system>
 	    </_>
 	}	
       </identifier>
@@ -499,19 +507,22 @@ declare function fadpt:represent_organization_as_organization_JSON($doc,$organiz
   let $xml:= 
     <json  type="object">
       <resourceType>Organization</resourceType>
+      <id>{string($organization/@entityID)}</id>
       <identifier type="array">
       <_ type="object">
 	<value>{string($organization/@entityID)}</value>
-	<assigner>{string($organization/csd:record/@sourceDirectory)}</assigner>	  
+	<system>{string($organization/csd:record/@sourceDirectory)}</system>	  
 	</_>
 	{
 	  for $otherID in $organization/csd:otherID
 	  let $auth := string($otherID/@assigningAuthorityName)
 	  let $code := string($otherID/@code)
+	  let $val := $otherID/text()
 	  return 
 	    <_ type="object">
-	      <value>{$code}</value>
-	      <assigner>{$auth}</assigner>
+	      <type>{$code}</type>
+	      <value>{$val}</value>
+	      <systemr>{$auth}</system>
 	    </_>
 	}	
       </identifier>
@@ -604,19 +615,22 @@ declare function fadpt:represent_provider_as_practitioner_JSON($doc,$provider,$a
   let $xml:= 
     <json  type="object">
       <resourceType>Practitioner</resourceType>
+      <id>{string($provider/@entityID)}</id>
       <identifier type="array">
       <_ type="object">
 	<value>{string($provider/@entityID)}</value>
-	<assigner>{string($provider/csd:record/@sourceDirectory)}</assigner>	  
+	<system>{string($provider/csd:record/@sourceDirectory)}</system>	  
 	</_>
 	{
 	  for $otherID in $provider/csd:otherID
 	  let $auth := string($otherID/@assigningAuthorityName)
 	  let $code := string($otherID/@code)
+	  let $val := $otherID/text()
 	  return 
 	    <_ type="object">
-	      <value>{$code}</value>
-	      <assigner>{$auth}</assigner>
+	      <type>{$code}</type>
+	      <value>{$val}</value>	      
+	      <system>{$auth}</system>
 	    </_>
 	}	
       </identifier>
