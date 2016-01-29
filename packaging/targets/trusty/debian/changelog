@@ -1,3 +1,13 @@
+openinfoman-fhir (1.0.12~trusty) trusty; urgency=medium
+
+  * Release Version 1.0.12
+    -7784ec8 fixups for reading
+    --http://github.com/openhie/openinfoman-fhir/commmit/7784ec8
+    -f55f704 fixups
+    --http://github.com/openhie/openinfoman-fhir/commmit/f55f704
+
+ -- Carl Leitner <litlfred@ibiblio.org>  Fri, 29 Jan 2016 12:55:59 -0500
+
 openinfoman-fhir (1.0.11~trusty) trusty; urgency=medium
 
   * Release Version 1.0.11
