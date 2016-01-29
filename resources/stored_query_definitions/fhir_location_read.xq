@@ -18,11 +18,11 @@ let $search_name := "urn:ihe:iti:csd:2014:stored-function:facility-search"
 
 let $careServicesSubRequest :=  
   <csd:careServicesRequest>
-    <csd:function urn="{$search_name}" resource="{$careServicesRequest/@resource}">
+    <csd:function urn="{$search_name}" resource="{$careServicesRequest/@resource}" base_url="{$careServicesRequest/@base_url}">
       <csd:requestParams>
          {
 	  let $id := $careServicesRequest/fhir:_id/text()
-	  return if (functx:all-whitespace($id)) then () else <csd:id>{$id}</csd:id>
+	  return if (functx:all-whitespace($id)) then () else <csd:id entityID="{$id}"/>
 	 }
          {
 	  let $cn := $careServicesRequest/fhir:name/text()

@@ -157,9 +157,13 @@ declare
   else 
     let $doc := csd_dm:open_document($csd_webconf:db,$doc_name)
     let $requestParams := 
-      <csd:requestParams function="{$search_name}" resource="{$doc_name}" base_url="{$csd_webconf:baseurl}">
-	<id>{$id}</id>
-      </csd:requestParams>
+      <csd:careServicesRequest>
+	<csd:function urn="{$search_name}" resource="{$doc_name}"  base_url="{$csd_webconf:baseurl}">
+	  <csd:requestParams >
+	    <fhir:_id>{$id}</fhir:_id>
+	  </csd:requestParams>
+	</csd:function>
+      </csd:careServicesRequest>
 
     let $entities := (csr_proc:process_CSR_stored_results($csd_webconf:db, $doc,$requestParams))[1] (:make sure there is only one:)
     let $resource := fadpt:format_entities($doc,$entities,$entityType,$format)
@@ -201,16 +205,21 @@ declare
   then ()
   else 
     let $doc := csd_dm:open_document($csd_webconf:db,$doc_name)
+
     let $requestParams := 	
-	<csd:requestParams function="{$search_name}" resource="{$doc_name}" base_url="{$csd_webconf:baseurl}">  	  	  
-	  {
-	    switch ($entityType)
-	    case "Practitioner" return  page:search_practitioner_parameters()
-	    case "Location" return   page:search_location_parameters()
-	    case "Organization" return 	page:search_organization_parameters()
-	    default return ()	  
-	  }
-	</csd:requestParams>
+      <csd:careServicesRequest>
+	<csd:function urn="{$search_name}" resource="{$doc_name}"  base_url="{$csd_webconf:baseurl}">
+	  <csd:requestParams >
+	    {
+	      switch ($entityType)
+	      case "Practitioner" return  page:search_practitioner_parameters()
+	      case "Location" return   page:search_location_parameters()
+	      case "Organization" return 	page:search_organization_parameters()
+	      default return ()	  
+	    }
+	  </csd:requestParams>
+	</csd:function>
+      </csd:careServicesRequest>
 
     let $entities := (csr_proc:process_CSR_stored_results($csd_webconf:db, $doc,$requestParams))
     let $resources := fadpt:format_entities($doc,$entities,$entityType,$format)
@@ -235,12 +244,16 @@ declare
   then ()
   else 
     let $doc := csd_dm:open_document($csd_webconf:db,$doc_name)
-    let $requestParams := 	
-	<csd:requestParams  function="{$search_name}" resource="{$doc_name}" base_url="{$csd_webconf:baseurl}"> 	  	 
-	  {
-	    page:search_valueset_parameters() 
-	  }
-	</csd:requestParams>
+    let $requestParams := 
+      <csd:careServicesRequest>
+	<csd:function urn="{$search_name}" resource="{$doc_name}"  base_url="{$csd_webconf:baseurl}">
+	  <csd:requestParams >
+	    {
+	      page:search_valueset_parameters() 
+	    }
+	  </csd:requestParams>
+	</csd:function>
+      </csd:careServicesRequest>
 
     let $valueset := (csr_proc:process_CSR_stored_results($csd_webconf:db, $doc,$requestParams))
     return $valueset
@@ -263,9 +276,13 @@ declare
   else 
     let $doc := csd_dm:open_document($csd_webconf:db,$doc_name)
     let $requestParams := 	
-      <csd:requestParams  function="{$search_name}" resource="{$doc_name}" base_url="{$csd_webconf:baseurl}"> 	  
-	  {page:history_global_parameters() }
-	</csd:requestParams>
+      <csd:careServicesRequest>
+	<csd:function urn="{$search_name}" resource="{$doc_name}"  base_url="{$csd_webconf:baseurl}">
+	  <csd:requestParams >
+	    {page:history_global_parameters() }
+	  </csd:requestParams>
+	</csd:function>
+      </csd:careServicesRequest>
 
     let $entities := (csr_proc:process_CSR_stored_results($csd_webconf:db, $doc,$requestParams))
     let $resources := fadpt:format_entities($doc,$entities,$entityType,$format)
