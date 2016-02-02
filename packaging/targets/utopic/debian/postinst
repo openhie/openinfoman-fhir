@@ -2,7 +2,7 @@
 set -x
 
 
-
+WGET=/usr/bin/wget
 OI=/var/lib/openinfoman
 USERNAME=oi
 BASEX=$OI/bin/basex
@@ -19,4 +19,4 @@ done
 
 chown -R $USERNAME:$USERNAME $OI
 
-
+$WGET --no-check-certificate http://localhost:8984/CSD/storedFunctions/reload -O  /dev/null || true
