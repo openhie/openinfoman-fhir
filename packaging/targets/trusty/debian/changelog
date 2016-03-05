@@ -1,3 +1,11 @@
+openinfoman-fhir (1.0.13~trusty) trusty; urgency=medium
+
+  * Release Version 1.0.13
+    -c01fd0e added --no-check-certificate in packaging wget request
+    --http://github.com/openhie/openinfoman-fhir/commmit/c01fd0e
+
+ -- Carl Leitner <litlfred@ibiblio.org>  Sat, 05 Mar 2016 09:31:48 +0000
+
 openinfoman-fhir (1.0.12~trusty) trusty; urgency=medium
 
   * Release Version 1.0.12

@@ -9,13 +9,21 @@ BASEX=$OI/bin/basex
 
 
 REPOS=("openinfoman_fhir_adapter.xqm")
-
+SFS=("stored_query_definitions/fhir_location_read.xml" "stored_query_definitions/fhir_fac_by_organizational_hierarchy_value_set.xml" "stored_query_definitions/fhir_organization_read.xml" "stored_query_definitions/fhir_practitioner_read.xml")
 
 for REPO in ${REPOS[@]}
 do
    INST="REPO INSTALL ${OI}/repo-src/${REPO}"
    $BASEX -Vc "${INST}"
 done
+
+for SF in ${SFS[@]}
+do
+  cd $OI
+  $OI/resources/scripts/install_stored_function.php $OI/resources/$SF 
+  if [[ $? != 0 ]]; then exit 1; fi
+done
+
 
 chown -R $USERNAME:$USERNAME $OI
 
