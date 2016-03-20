@@ -20,14 +20,14 @@ declare namespace fhir = "http://hl7.org/fhir";
 
 
 declare function fadpt:is_fhir_function($search_name) {
-  let $function := csr_proc:get_function_definition($csd_webconf:db,$search_name)
+  let $function := csr_proc:get_function_definition($search_name)
   let $ext := $function//csd:extension[  @urn='urn:openhie.org:openinfoman:adapter' and @type='fhir']
   return (count($ext) > 0) 
 };
 
 
 declare function fadpt:has_feed($search_name,$doc_name) {
-  (fadpt:is_fhir_function($search_name) and csd_dm:document_source_exists($csd_webconf:db ,$doc_name))
+  (fadpt:is_fhir_function($search_name) and csd_dm:document_source_exists($doc_name))
 };
 
 declare function fadpt:get_base_url($search_name) {
@@ -66,7 +66,7 @@ declare function fadpt:create_feed_from_entities($entities,$requestParams) {
   let $search_name := string($requestParams/@urn)
   let $doc_name := string($requestParams/@resource)
   let $base_url := string($requestParams/@base_url)
-  let $function := csr_proc:get_function_definition($csd_webconf:db,$search_name)
+  let $function := csr_proc:get_function_definition($search_name)
   let $entity := string(($function/csd:extension[ @urn='urn:openhie.org:openinfoman:adapter:fhir:read']/@type)[1])
   let $link := concat(fadpt:get_base_url($search_name,$base_url),'/' , $doc_name ,'/',$entity )
   let $title := concat("CSD entity as FHIR ",$entity)
@@ -92,7 +92,7 @@ declare function fadpt:create_feed_from_entities_JSON($entities,$requestParams) 
   let $search_name := string($requestParams/@function)
   let $doc_name := string($requestParams/@resource)
   let $base_url := string($requestParams/@base_url)
-  let $function := csr_proc:get_function_definition($csd_webconf:db,$search_name)
+  let $function := csr_proc:get_function_definition($search_name)
   let $entity := string(($function/csd:extension[ @urn='urn:openhie.org:openinfoman:adapter:fhir:read']/@type)[1])
   let $link := concat(fadpt:get_base_url($search_name,$base_url),'/' , $doc_name ,'/',$entity )
   let $title := concat("CSD entity as FHIR (JSON) ",$entity)

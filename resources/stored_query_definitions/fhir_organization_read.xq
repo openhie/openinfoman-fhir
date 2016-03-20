@@ -60,7 +60,7 @@ let $careServicesSubRequest :=
   </csd:careServicesRequest>
 
  
-let $contents := csr_proc:process_CSR_stored_results($csd_webconf:db, /. , $careServicesSubRequest)
+let $contents := csr_proc:process_CSR_stored_results( /. , $careServicesSubRequest)
 
    (:note this is a CSD:csd element, not a document :)
 return $contents/csd:organizationDirectory/csd:organization

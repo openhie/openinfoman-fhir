@@ -10,7 +10,7 @@ let $org_id := $careServicesRequest/fhir:_id/text()
 let $search_name := string($careServicesRequest/@function)
 let $resource := string($careServicesRequest/@resource)
 
-let $function := csr_proc:get_function_definition($csd_webconf:db,$search_name)
+let $function := csr_proc:get_function_definition($search_name)
 let $entity :=   string(($function/csd:extension[@urn='urn:openhie.org:openinfoman:adapter:fhir:valueset' ])[1]/@type)
 
 
