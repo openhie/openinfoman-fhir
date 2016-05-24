@@ -17,51 +17,49 @@ declare variable $careServicesRequest as item() external;
 let $search_name := "urn:ihe:iti:csd:2014:stored-function:provider-search"
 
 let $careServicesSubRequest :=  
-  <csd:careServicesRequest>
-    <csd:function urn="{$search_name}" resource="{$careServicesRequest/@resource}" base_url="{$careServicesRequest/@base_url}">
+  <csd:careServicesRequest urn="{$search_name}" resource="{$careServicesRequest/@resource}" base_url="{$careServicesRequest/@base_url}">
       <csd:requestParams>
          {
-	  let $id := $careServicesRequest/fhir:_id/text()
+	  let $id := $careServicesRequest/csd:requestParams/fhir:_id/text()
 	  return if (functx:all-whitespace($id)) then () else <csd:id entityID="{$id}"/>
 	 }
          {
-	  let $cn := $careServicesRequest/fhir:name/fhir:text/text()
+	  let $cn := $careServicesRequest/csd:requestParams/fhir:name/fhir:text/text()
 	  return if (functx:all-whitespace($cn)) then () else <csd:commonName>{$cn}</csd:commonName>
 	 }
 	 {
-	  let $org := string($careServicesRequest/fhir:organization/@value)
+	  let $org := string($careServicesRequest/csd:requestParams/fhir:organization/@value)
 	  return if (functx:all-whitespace($org)) then () else  <csd:organizations><csd:organization>{$org}</csd:organization></csd:organizations> 
 	 }
 
 	 {
-	  let $loc := string($careServicesRequest/fhir:location/@value)
+	  let $loc := string($careServicesRequest/csd:requestParams/fhir:location/@value)
 	  return if (functx:all-whitespace($loc)) then () else <csd:facilities><csd:facility>{$loc}</csd:facility></csd:facilities> 
 	 }
 
          {
-	  let $t_start := $careServicesRequest/page/text()
+	  let $t_start := $careServicesRequest/csd:requestParams/page/text()
 	  return if (functx:is-a-number($t_start))
 	    then
 	      let $start := max((xs:int($t_start),1))
-	      let $t_count := $careServicesRequest/fhir:_count/text()
+	      let $t_count := $careServicesRequest/csd:requestParams/fhir:_count/text()
 	      let $count := if(functx:is-a-number($t_count)) then  max((xs:int($t_count),1)) else 50
 	      let $startIndex := ($start - 1)*$count + 1
 	      return <csd:start>{xs:string($startIndex)}</csd:start>
 	    else () 
 	 }
          {
-	   let $count := $careServicesRequest/fhir:_count/text()
+	   let $count := $careServicesRequest/csd:requestParams/fhir:_count/text()
 	   return 
 	      if(functx:is-a-number($count)) 
 	      then <csd:max>{max(($count,1))} </csd:max>
 	      else ()
 	 }
 	 {
-	  let $since := $careServicesRequest/fhir:_since/text()
+	  let $since := $careServicesRequest/csd:requestParams/fhir:_since/text()
 	  return if (functx:all-whitespace($since)) then () else <csd:record updated="{$since}"/> 
 	 }
       </csd:requestParams>
-    </csd:function>
   </csd:careServicesRequest>
 
  

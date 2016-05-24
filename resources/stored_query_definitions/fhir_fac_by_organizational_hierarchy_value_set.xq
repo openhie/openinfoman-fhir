@@ -6,8 +6,8 @@ declare namespace csd =  "urn:ihe:iti:csd:2013";
 declare namespace fhir = "http://hl7.org/fhir";
 declare variable $careServicesRequest as item() external;
 
-let $org_id := $careServicesRequest/fhir:_id/text()
-let $search_name := string($careServicesRequest/@function)
+let $org_id := $careServicesRequest/csd:requestParams/fhir:_id/text()
+let $search_name := string($careServicesRequest/@urn)
 let $resource := string($careServicesRequest/@resource)
 
 let $function := csr_proc:get_function_definition($search_name)
@@ -24,8 +24,8 @@ let $base_url :=
   concat($t_base_url, "CSD/csr/", $resource, "/careServicesRequest/" , $search_name , "/adapter/fhir/" , $entity , "/valueset" )
 
 let $expand := 
-    (exists($careServicesRequest/fhir:_query)
-    and matches(functx:trim(($careServicesRequest/fhir:_query)[1]/text()),'expand','i')
+    (exists($careServicesRequest/csd:requestParams/fhir:_query)
+    and matches(functx:trim(($careServicesRequest/csd:requestParams/fhir:_query)[1]/text()),'expand','i')
     )
       
 

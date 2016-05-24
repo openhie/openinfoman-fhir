@@ -157,12 +157,10 @@ declare
   else 
     let $doc := csd_dm:open_document($doc_name)
     let $requestParams := 
-      <csd:careServicesRequest>
-	<csd:function urn="{$search_name}" resource="{$doc_name}"  base_url="{$csd_webconf:baseurl}">
-	  <csd:requestParams >
-	    <fhir:_id>{$id}</fhir:_id>
-	  </csd:requestParams>
-	</csd:function>
+      <csd:careServicesRequest urn="{$search_name}" resource="{$doc_name}"  base_url="{$csd_webconf:baseurl}">
+	<csd:requestParams >
+	  <fhir:_id>{$id}</fhir:_id>
+	</csd:requestParams>
       </csd:careServicesRequest>
 
     let $entities := (csr_proc:process_CSR_stored_results( $doc,$requestParams))[1] (:make sure there is only one:)
