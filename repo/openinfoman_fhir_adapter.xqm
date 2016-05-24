@@ -89,7 +89,7 @@ declare function fadpt:create_feed_from_entities($entities,$requestParams) {
 };
 
 declare function fadpt:create_feed_from_entities_JSON($entities,$requestParams) {
-  let $search_name := string($requestParams/@function)
+  let $search_name := string($requestParams/@urn)
   let $doc_name := string($requestParams/@resource)
   let $base_url := string($requestParams/@base_url)
   let $function := csr_proc:get_function_definition($search_name)
