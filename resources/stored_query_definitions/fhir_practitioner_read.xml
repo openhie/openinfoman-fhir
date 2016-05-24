@@ -1,37 +1,106 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<careServicesFunction xmlns="urn:ihe:iti:csd:2013"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:csd="urn:ihe:iti:csd:2013"
-  xsi:schemaLocation="urn:ihe:iti:csd:2013 CSD.xsd" xmlns:xi="http://www.w3.org/2001/XInclude"
-  xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xforms="http://www.w3.org/2002/xforms"
-  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-  xmlns:hfp="http://www.w3.org/2001/XMLSchema-hasFacetAndProperty"
-  xmlns:fhir="http://hl7.org/fhir"
-  urn="urn:openhie.org:openinfoman-fhir:fhir_practitioner_read" content-type="text/xml">
+<careServicesFunction xmlns="urn:ihe:iti:csd:2013" xmlns:fhir="http://hl7.org/fhir" xmlns:hfp="http://www.w3.org/2001/XMLSchema-hasFacetAndProperty" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:csd="urn:ihe:iti:csd:2013" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:ihe:iti:csd:2013 CSD.xsd" urn="urn:openhie.org:openinfoman-fhir:fhir_practitioner_read" content-type="text/xml">
   <description>
     Provider XML representation of a provider as a FHIR practitioner resource.  
 
   </description>
-  <definition ><xi:include parse='text' href='fhir_practitioner_read.xq'/></definition>
-  <xforms:instance>
-    <careServicesRequest>
-      <fhir:_id/> <!-- The logical resource id associated with the resource (must be supported by all servers) -->
-      <fhir:_since/>
-      <fhir:_count>50</fhir:_count>
-      <page>1</page>
-      <fhir:identifier/>  <!-- token practitioner's Identifier-->
-      <fhir:name>
+  <definition>
+    <xi:include parse="text" href="fhir_practitioner_read.xq"/>
+  </definition>
+  <xforms:model id="urn:openhie.org:openinfoman-fhir:fhir_practitioner_read">
+    <xforms:instance id="care-services-result">
+      <csd:careSerivcesResponse id="" code="" content-type=""/>
+    </xforms:instance>
+    <xforms:instance id="http-post-request">
+      <csd:requestParams>
+        <fhir:_id/>
+        <fhir:_since/>
+        <fhir:_count>50</fhir:_count>
+        <page>1</page>
+        <fhir:identifier/>
+        <fhir:name>
 	<fhir:text/> <!-- string A portion of the  name -->
 	<fhir:family/> <!-- string A portion of the family name -->
 	<fhir:given/> <!-- string A portion of the given name -->
       </fhir:name>
-      <fhir:telecom/>
-      <fhir:address/>  <!-- string An address in any kind of address/part-->
-      <fhir:gender/> <!-- token Gender of the practitioner-->
-      <fhir:organization/> <!-- reference The identity of the organization the practitioner represents / acts on behalf of.  Can be OID or URL -->
-
-    </careServicesRequest>
-  </xforms:instance>
-  <xforms:bind nodeset="id" type="csd:uniqueID"/>
-  <csd:extension type='fhir' urn='urn:openhie.org:openinfoman:adapter'/>
-  <csd:extension type='Practitioner' urn='urn:openhie.org:openinfoman:adapter:fhir:read'/>
+        <fhir:telecom/>
+        <fhir:address/>
+        <fhir:gender/>
+        <fhir:organization/>
+      </csd:requestParams>
+    </xforms:instance>
+    <xforms:instance id="http-post-response">
+      <http:result xmlns:http="http://expath.org/ns/http-client" status="">
+        <http:header name="X-CSD-Transaction-ID" value=""/>
+        <http:body/>
+      </http:result>
+    </xforms:instance>
+    <xforms:instance id="soap-request">
+      <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope">
+        <soap:Header>
+          <wsa:Action xmlns:wsa="http://www.w3.org/2005/08/addressing" soap:mustUnderstand="1">urn:ihe:iti:csd:2013:GetCareServicesRequest</wsa:Action>
+          <wsa:MessageID xmlns:wsa="http://www.w3.org/2005/08/addressing"/>
+          <wsa:ReplyTo xmlns:wsa="http://www.w3.org/2005/08/addressing" soap:mustUnderstand="1">
+            <wsa:Address>http://www.w3.org/2005/08/addressing/anonymous</wsa:Address>
+          </wsa:ReplyTo>
+          <wsa:To xmlns:wsa="http://www.w3.org/2005/08/addressing" soap:mustUnderstand="1">{$LOCATION}</wsa:To>
+        </soap:Header>
+        <soap:Body>
+          <csd:careServicesRequest urn="urn:openhie.org:openinfoman-fhir:fhir_practitioner_read">
+            <csd:requestParams>
+              <fhir:_id/>
+              <fhir:_since/>
+              <fhir:_count>50</fhir:_count>
+              <page>1</page>
+              <fhir:identifier/>
+              <fhir:name>
+	<fhir:text/> <!-- string A portion of the  name -->
+	<fhir:family/> <!-- string A portion of the family name -->
+	<fhir:given/> <!-- string A portion of the given name -->
+      </fhir:name>
+              <fhir:telecom/>
+              <fhir:address/>
+              <fhir:gender/>
+              <fhir:organization/>
+            </csd:requestParams>
+          </csd:careServicesRequest>
+        </soap:Body>
+      </soap:Envelope>
+    </xforms:instance>
+    <xforms:instance id="soap-response">
+      <soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope">
+        <soap:Header>
+          <wsa:Action xmlns:wsa="http://www.w3.org/2005/08/addressing" soap:mustUnderstand="1">urn:ihe:iti:csd:2013:GetCareServicesResponse</wsa:Action>
+          <wsa:MessageID xmlns:wsa="http://www.w3.org/2005/08/addressing"/>
+          <wsa:ReplyTo xmlns:wsa="http://www.w3.org/2005/08/addressing" soap:mustUnderstand="1">
+            <wsa:Address>http://www.w3.org/2005/08/addressing/anonymous</wsa:Address>
+          </wsa:ReplyTo>
+          <wsa:RelatesTo xmlns:wsa="http://www.w3.org/2005/08/addressing"/>
+        </soap:Header>
+        <soap:Body>
+          <csd:careServicesResponse/>
+        </soap:Body>
+      </soap:Envelope>
+    </xforms:instance>
+    <xforms:submission id="soap-submission" method="post" mediatype="application/soap+xml" ref="instance('soap-request')" resource="{$LOCATION}"/>
+    <xforms:submission id="http-post-submission" method="post" mediatype="text/xml" ref="instance('http-post-request')" resource="{$LOCATION}/urn:openhie.org:openinfoman-fhir:fhir_practitioner_read"/>
+    <xforms:action ev:event="xforms-submit-done" id="http-post-prepare">
+      <xforms:insert context="instance('http-post-response')/http:result/http:body" origin="instance('care-services-result')/csd:careServicesResponse/csd:result/*"/>
+      <xforms:setValue bind="instance('http-post-response')/http:result/@status" value="instance('care-services-result')/csd:careServicesResponse/@code"/>
+      <xforms:setValue bind="instance('http-post-response')/http:body/@content-type" value="instance('care-services-result')/csd:careServicesResponse/@content-type"/>
+      <xforms:setValue bind="instance('http-post-response')/http:result/http:header[@name='X-CSD-Transaction-ID']/@value" value="instance('care-services-result')/csd:careServicesResponse/@id"/>
+    </xforms:action>
+    <xforms:action ev:event="xforms-submit-done" id="soap-prepare">
+      <xforms:insert context="instance('soap-response')/soap:Envelope/soap:Body/csd:careServicesResponse/csd:result" origin="instance('care-services-result')/csd:careServicesRepsonse/csd:result/*"/>
+      <xforms:insert context="instance('soap-response')/soap:Envelope/soap:Body/csd:careServicesResponse/@content-type" origin="instance('care-services-result')/csd:careServicesRepsonse/@content-type"/>
+      <xforms:insert context="instance('soap-response')/soap:Envelope/soap:Body/csd:careServicesResponse/@code" origin="instance('care-services-result')/csd:careServicesRepsonse/@code"/>
+      <xforms:setValue bind="instance('soap-response')/soap:Envelope/soap:Header/wsa:messageID" value="instance('soap-request')/csd:careServicesRequest/@id"/>
+      <xforms:setValue bind="instance('soap-response')/soap:Envelope/soap:Header/wsa:relatesTo" value="instance('soap-request')/soap:Envelope/soap:Header/wsa:messageID"/>
+    </xforms:action>
+    <xforms:bind nodeset="instance('http-post-request')/" type="csd:uniqueID"/>
+    <xforms:bind nodeset="instance('soap-request')/soap:Envelope/soap:Header/soap:Body/csd:careServicesRequest/" type="csd:uniqueID"/>
+  </xforms:model>
+  
+  
+  <csd:extension type="fhir" urn="urn:openhie.org:openinfoman:adapter"/>
+  <csd:extension type="Practitioner" urn="urn:openhie.org:openinfoman:adapter:fhir:read"/>
 </careServicesFunction>
