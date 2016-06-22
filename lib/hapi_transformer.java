@@ -15,7 +15,7 @@ import ca.uhn.fhir.parser.DataFormatException;
 //import ca.uhn.fhir.validation.ValidationResult;
 
 public class hapi_transformer {
-    public static void transform(String resourceBody,String start,String type,Boolean output) {
+    public String transform(String resourceBody,String start,String type) {
 
         PrintStream orig = System.out;
         System.setOut(System.err);
@@ -44,10 +44,8 @@ public class hapi_transformer {
                     //if ( !result.isSuccessful() ) {
                         //System.exit(1);
                     //}
-                    if ( output ) {
-                        jsonParser.setPrettyPrint(true);
-                        encode = jsonParser.encodeResourceToString(comm);
-                    }
+                 	  jsonParser.setPrettyPrint(true);
+                    encode = jsonParser.encodeResourceToString(comm);
                 } catch ( DataFormatException dfe ) {
                     System.exit(1);
                 }
@@ -58,10 +56,8 @@ public class hapi_transformer {
                     //if ( !result.isSuccessful() ) {
                     //System.exit(1);
                     //}
-                    if ( output ) {
-                        xmlParser.setPrettyPrint(true);
-                        encode = xmlParser.encodeResourceToString(comm);
-                    }
+                    xmlParser.setPrettyPrint(true);
+                    encode = xmlParser.encodeResourceToString(comm);
                 } catch ( DataFormatException dfe ) {
                     System.out.println( dfe.getMessage() );
                     System.exit(1);
@@ -72,31 +68,23 @@ public class hapi_transformer {
             if ( start.equals( "xml" ) ) {
                 try {
                     bundle = xmlParser.parseResource(Bundle.class, resourceBody );
-                    if ( output ) {
-                        jsonParser.setPrettyPrint(true);
-                        encode = jsonParser.encodeResourceToString(bundle);
-                    }
+                    jsonParser.setPrettyPrint(true);
+                    encode = jsonParser.encodeResourceToString(bundle);
                 } catch ( DataFormatException dfe ) {
                     System.exit(1);
                 }
             } else {
                 try {
                     bundle = jsonParser.parseResource(Bundle.class, resourceBody );
-                    if ( output ) {
-                        xmlParser.setPrettyPrint(true);
-                        encode = xmlParser.encodeResourceToString(bundle);
-                    }
+                    xmlParser.setPrettyPrint(true);
+                    encode = xmlParser.encodeResourceToString(bundle);
                 } catch ( DataFormatException dfe ) {
                     System.out.println( dfe.getMessage() );
                     System.exit(1);
                 }
             }
          }
-    
-        if ( output ) {
-            System.setOut(orig);
-            System.out.println(encode);
-        }
+        return encode;
         
     }
 }
