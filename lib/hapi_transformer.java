@@ -15,22 +15,21 @@ import ca.uhn.fhir.parser.DataFormatException;
 //import ca.uhn.fhir.validation.ValidationResult;
 
 public class hapi_transformer {
+    
+
+    private FhirContext ctx;
+    private IParser xmlParser;  
+    private IParser jsonParser;
+
+    public hapi_transformer() {
+	ctx = FhirContext.forDstu2();
+        xmlParser = ctx.newXmlParser();	
+	jsonParser = ctx.newJsonParser();
+        ctx.setParserErrorHandler(new StrictErrorHandler());
+    }
+
     public String transform(String resourceBody,String start,String type) {
 
-        PrintStream orig = System.out;
-        System.setOut(System.err);
-        // Create a context
-
-        FhirContext ctx = FhirContext.forDstu2();
-
-        ctx.setParserErrorHandler(new StrictErrorHandler());
-
-        //FhirValidator val = ctx.newValidator();
-
-        // Create a XML parser
-        IParser xmlParser = ctx.newXmlParser();
-        // Create a JSON parser
-        IParser jsonParser = ctx.newJsonParser();
     
         String encode = "";
 
@@ -83,7 +82,7 @@ public class hapi_transformer {
                     System.exit(1);
                 }
             }
-         }
+	}
         return encode;
         
     }
