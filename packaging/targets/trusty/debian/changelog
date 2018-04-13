@@ -1,3 +1,21 @@
+openinfoman-fhir (1.2.3~trusty) trusty; urgency=medium
+
+  * Release Version 1.2.3
+    -79d438c packaging ubuntu 16.04
+    --https://github.com/openhie/openinfoman-fhir/commmit/79d438c
+    -cf5d7bc hapi transformer context and parsers set in construtors
+    --https://github.com/openhie/openinfoman-fhir/commmit/cf5d7bc
+    -6686a15 Making method represent_provider_as_practitioner_JSON use
+    --https://github.com/openhie/openinfoman-fhir/commmit/6686a15
+    -5142f49 Changing the method main to transform and make it return s
+    --https://github.com/openhie/openinfoman-fhir/commmit/5142f49
+    -ed7aebf Adding hapi_transformer class
+    --https://github.com/openhie/openinfoman-fhir/commmit/ed7aebf
+    -e7464a6 Added HAPI (java library) to convert JSON <=> XML FHIR for
+    --https://github.com/openhie/openinfoman-fhir/commmit/e7464a6
+
+ -- Carl Leitner <litlfred@ibiblio.org>  Fri, 13 Apr 2018 07:59:10 +0000
+
 openinfoman-fhir (1.2.2~trusty) trusty; urgency=medium
 
   * Release Version 1.2.2
