@@ -1,3 +1,11 @@
+openinfoman-fhir (1.2.4~trusty) trusty; urgency=medium
+
+  * Release Version 1.2.4
+    -2abbfc1 removing unused module
+    --https://github.com/openhie/openinfoman-fhir/commmit/2abbfc1
+
+ -- Carl Leitner <litlfred@ibiblio.org>  Sat, 14 Apr 2018 06:25:26 +0000
+
 openinfoman-fhir (1.2.3~trusty) trusty; urgency=medium
 
   * Release Version 1.2.3
