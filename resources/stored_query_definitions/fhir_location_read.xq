@@ -1,6 +1,5 @@
 import module namespace csr_proc = "https://github.com/openhie/openinfoman/csr_proc";
 import module namespace csd_webconf =  "https://github.com/openhie/openinfoman/csd_webconf";
-import module namespace fadpt = "https://github.com/openhie/openinfoman/adapter/fhir";
 import module namespace functx = 'http://www.functx.com';
 
 declare namespace csd =  "urn:ihe:iti:csd:2013";
