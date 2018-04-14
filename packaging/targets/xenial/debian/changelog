@@ -1,3 +1,11 @@
+openinfoman-fhir (1.2.5~xenial) xenial; urgency=medium
+
+  * Release Version 1.2.5
+    -5991ec2 stop importing unuse module
+    --https://github.com/openhie/openinfoman-fhir/commmit/5991ec2
+
+ -- Carl Leitner <litlfred@ibiblio.org>  Sat, 14 Apr 2018 06:41:42 +0000
+
 openinfoman-fhir (1.2.4~xenial) xenial; urgency=medium
 
   * Release Version 1.2.4
