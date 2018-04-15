@@ -1,3 +1,11 @@
+openinfoman-fhir (1.2.7~bionic) bionic; urgency=medium
+
+  * Release Version 1.2.7
+    -9c4bbf7 packaging for ubuntu 18.04
+    --https://github.com/openhie/openinfoman-fhir/commmit/9c4bbf7
+
+ -- Carl Leitner <litlfred@ibiblio.org>  Sun, 15 Apr 2018 07:39:05 +0000
+
 openinfoman-fhir (1.2.6~xenial) xenial; urgency=medium
 
   * Release Version 1.2.6
